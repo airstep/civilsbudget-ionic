@@ -1,0 +1,53 @@
+<ion-header>
+  <div class="placeBack" (click)="back()">
+    <ion-icon name="ios-arrow-back"></ion-icon><span>{{'PROJECTS' | translate}}</span>
+  </div>
+  <div class="header">
+    <img [src]='project.picture'>
+    <div class="header_gradient">
+        <img src='assets/img/gradient.png'>
+    </div>
+    <div class="header_logo">
+        <button ion-button color="light">{{ 'LIKE' | translate }}</button>
+    </div>      
+    <div class="header_text">
+      {{'PROJECT_MONEY' | translate}} {{project.charge | currency:'UAH':true:'1.2-2'| currencyFix }} {{'MONEY_CURRENCY' | translate}}
+    </div>
+  </div>
+  <table>
+    <tr>
+      <td class="leftStat">
+        <p>{{'LIKED' | translate}}</p>
+        <div class="info">{{project.likes_count}}</div>    
+      </td>
+      <td class="rightStat">
+          <p>{{'END_DATE' | translate}}</p>
+          <div class="info">14.11.2017</div>          
+      </td>
+    </tr>
+  </table>
+</ion-header>  
+
+<ion-content padding>
+  <h2>{{ project.title }}</h2>
+  <p>{{ project.description }}</p>
+  <ion-row>
+    <ion-col>
+      <p>{{'PROJECT_AUTHOR' | translate}}</p>
+    </ion-col>
+    <ion-col>
+      <p float-right class="author">{{ project.owner }}</p>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="footer">
+    <ion-buttons left>
+      &#9400; 2017 imisto.com.ua
+    </ion-buttons>
+    <ion-buttons right>
+        <button ion-button (click)="openFB()" clear><ion-icon name="logo-facebook"></ion-icon></button>      
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

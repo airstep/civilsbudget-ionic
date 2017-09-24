@@ -1,0 +1,121 @@
+page-home {
+  .header {
+    width: 100%;
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;   
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;      
+    }     
+  }
+
+  .header_gradient {
+    top: 0;
+    left: 0;    
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;      
+    }
+  }
+
+  .header_logo {
+    position:absolute;
+    z-index: 20; 
+  }
+
+  .header_text {
+    position: absolute;
+    z-index: 30;
+    font-size: 14pt;
+    width: 80%;
+    bottom: 8px;
+    text-align: center;
+    color: white;
+    z-index: 19;
+  }
+
+  ion-header {
+    ion-item {
+      width: 100%;
+      margin: 0%;
+      opacity: 0.7;
+      font-size: 0.9em;
+      transition: 0.2s linear;
+      img {
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;			  							
+        object-fit: cover;
+        z-index: 20;
+      }
+    }
+  }
+
+  ion-footer {    
+    ion-toolbar {
+      padding: 4px !important;
+      min-height: auto !important;
+    }
+    
+    color: white;
+    ion-icon {
+      font-size: 22pt;
+      color: white;
+    }
+  }
+
+  .notFound {
+    font-size: 14pt;
+    display:flex;
+    //font-weight: bold;
+    align-items:center;
+    justify-content:center;
+    
+    padding: 16px;
+
+    p {
+      white-space: pre-line;
+      text-align: center;
+    }
+  }
+
+  div.spinner {
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;   
+    
+  }
+
+  @media only screen and (orientation: landscape) {
+    .header {
+      display: none;
+      height: 0px !important;
+    }
+  } 
+  
+/* Or if you just want to shrink the header down to the standard 44px
+  @media only screen and (orientation: landscape) {
+    .platform-ios.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) {
+      height: 44px;
+    }
+    .platform-ios.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) > * {
+      margin-top: 0;
+    }
+    .platform-ios.platform-cordova:not(.fullscreen) .has-header,
+    .platform-ios.platform-cordova:not(.fullscreen) .bar-subheader {
+      top: 44px;
+    }
+  }
+*/  
+}

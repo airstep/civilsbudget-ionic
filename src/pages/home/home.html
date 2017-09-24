@@ -1,0 +1,79 @@
+<ion-header> 
+  <expandable-header [scrollArea]="mycontent" headerHeight="266">
+    <div class="header">
+      <img src='assets/img/header.png'>
+      <div class="header_gradient">
+          <img src='assets/img/gradient.png'>
+      </div>
+      <div class="header_logo">
+          <img src='assets/img/header_logo.png'>
+      </div>      
+      <div class="header_text">
+        {{'HEADER_TEXT' | translate}}
+      </div>
+    </div>    
+  </expandable-header>  
+</ion-header>
+  
+<ion-content fullscreen #mycontent>
+  <ion-refresher (ionRefresh)="pullRefresh($event)">
+    <ion-refresher-content 
+      refreshingSpinner="ios"    
+      pullingIcon="arrow-dropdown"
+      [pullingText]="translate.instant('LOADING_INSTRUCTION')"
+      [refreshingText]="translate.instant('LOADING')">
+    </ion-refresher-content>
+  </ion-refresher>                      
+  
+  <div class="spinner" *ngIf="isLoading === true && projects.length === 0">
+    <ion-spinner name="ios">{{ 'LOADING' | translate }}</ion-spinner>
+  </div>
+
+  <div class="notFound" *ngIf="isLoading === false && projects.length === 0 && isLoadingOnPull === false">
+    <p text-center>{{ 'NO_PROJECTS_FOUND' | translate }}</p>
+  </div>
+  
+  <ion-list>    
+    <ion-card *ngFor="let p of projects">
+      <ion-item>
+        <ion-avatar item-start *ngIf="p.avatar_owner">
+          <img [src]="p.avatar_owner">
+        </ion-avatar>
+        <h2>{{ p.owner }}</h2>
+        <p>{{ p.title }}</p>
+        <p>{{ p.createdAt | amDateFormat: 'DD.MM.YYYY' }}</p>
+      </ion-item>        
+
+      <img [src]="p.picture">
+
+      <ion-card-content>
+        <p>{{ p.description }}
+      </ion-card-content>
+
+      <ion-row>
+        <ion-col>
+          <button ion-button icon-left clear small>
+            <ion-icon [name]="p.vote ? 'ios-thumbs-up' : 'ios-thumbs-up-outline'"></ion-icon>
+            <div>{{p.likes_count}} {{'LIKES' | translate}}</div>
+          </button>
+        </ion-col>
+        <ion-col>
+          <button ion-button small float-right (click)="openDetails(p)">
+            {{'MORE' | translate}}
+          </button>
+        </ion-col>
+      </ion-row>             
+    </ion-card>    
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="footer">
+    <ion-buttons left>
+      &#9400; 2017 imisto.com.ua
+    </ion-buttons>
+    <ion-buttons right>
+      <button ion-button (click)="openFB()" clear><ion-icon name="logo-facebook"></ion-icon></button>      
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

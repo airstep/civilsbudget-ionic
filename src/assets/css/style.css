@@ -1,0 +1,8 @@
+.stickypanel { 
+  left: 0px !important;
+  max-width: 280px !important;
+}
+
+.container-fluid {
+  margin-left: -288px;
+}
