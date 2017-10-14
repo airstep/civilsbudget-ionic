@@ -12,6 +12,10 @@ page-home {
     }     
   }
 
+  ion-refresher {
+    z-index: 1000 !important;
+  } 
+
   .header_gradient {
     top: 0;
     left: 0;    

@@ -2,19 +2,24 @@
   <div class="placeBack" (click)="back()">
     <ion-icon name="ios-arrow-back"></ion-icon><span>{{'PROJECTS' | translate}}</span>
   </div>
-  <div class="header">
-    <img [src]='project.picture'>
-    <div class="header_gradient">
-        <img src='assets/img/gradient.png'>
+  <expandable-header [scrollArea]="detailsContent" headerHeight="266">
+    <div class="header">
+      <img [src]="picture">
+      <div class="header_gradient">
+          <img src='assets/img/gradient.png'>
+      </div>
+      <div class="header_logo">
+          <button ion-button color="light" [disabled]='project.vote' (click)="like()">
+            <span *ngIf="!project.vote">{{ 'LIKE' | translate }}</span>
+            <span *ngIf="project.vote">{{ 'ALREADY_LIKED' | translate }}</span>
+          </button>
+      </div>      
+      <div class="header_text">
+        {{'PROJECT_MONEY' | translate}} {{project.charge | currency:'UAH':true:'1.2-2'| currencyFix }} {{'MONEY_CURRENCY' | translate}}
+      </div>
     </div>
-    <div class="header_logo">
-        <button ion-button color="light">{{ 'LIKE' | translate }}</button>
-    </div>      
-    <div class="header_text">
-      {{'PROJECT_MONEY' | translate}} {{project.charge | currency:'UAH':true:'1.2-2'| currencyFix }} {{'MONEY_CURRENCY' | translate}}
-    </div>
-  </div>
-  <table>
+  </expandable-header>  
+  <table *ngIf="project">
     <tr>
       <td class="leftStat">
         <p>{{'LIKED' | translate}}</p>
@@ -28,7 +33,7 @@
   </table>
 </ion-header>  
 
-<ion-content padding>
+<ion-content padding fullscreen #detailsContent>
   <h2>{{ project.title }}</h2>
   <p>{{ project.description }}</p>
   <ion-row>

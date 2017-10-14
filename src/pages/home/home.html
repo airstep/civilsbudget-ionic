@@ -52,7 +52,7 @@
 
       <ion-row>
         <ion-col>
-          <button ion-button icon-left clear small>
+          <button ion-button icon-left clear small (click)="like(p)">
             <ion-icon [name]="p.vote ? 'ios-thumbs-up' : 'ios-thumbs-up-outline'"></ion-icon>
             <div>{{p.likes_count}} {{'LIKES' | translate}}</div>
           </button>
@@ -65,6 +65,14 @@
       </ion-row>             
     </ion-card>    
   </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" enabled="true">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="{{ 'LOADING_MORE_DATA' | translate }}">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
 </ion-content>
 
 <ion-footer>

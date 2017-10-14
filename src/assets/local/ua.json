@@ -12,5 +12,10 @@
   "PROJECT_MONEY": "Бюджет проекту: ",
   "PROJECT_AUTHOR": "Автор проекту",
   "MONEY_CURRENCY_SYMBOL": "₴",
-  "MONEY_CURRENCY": "грн"
+  "MONEY_CURRENCY": "грн",
+  "SORRY": "Вибачте",
+  "PLEASE_AUTHORIZE": "Будь ласка - авторизуйтесь!",
+  "UNKNOWN_ERROR": "Не визначена помилка",
+  "LOADING_MORE_DATA": "Завантажую проекти...",
+  "ALREADY_LIKED": "Пдтримано"
 }

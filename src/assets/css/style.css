@@ -1,8 +1,42 @@
 .stickypanel { 
   left: 0px !important;
-  max-width: 280px !important;
+  max-width: 240px !important;
+
+  padding: 0px !important;
+  margin: 0px !important;
+  padding-right: 90px !important;
+  margin-top: -60px !important;
+  min-height: 125px !important;
+  height: 100px !important;  
 }
+
+/*.stickypanel .col-xs-12 {
+  width: 0% !important;
+  padding: 0px !important;
+  margin: 0px !important;
+}*/
 
 .container-fluid {
   margin-left: -288px;
+}
+
+#site, #client, #data, #data-info, .panel-group {
+  display: none !important;
+}
+
+div.header.container {
+  height: 40px;
+}
+
+.container {
+  padding-left: 10px;
+}
+
+#header {
+  padding: 0px;
+}
+
+#main-logo {
+  margin: 0px;
+  padding-top: 5px;
 }
