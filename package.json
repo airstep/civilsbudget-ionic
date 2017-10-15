@@ -1,6 +1,6 @@
 {
     "name": "civils-budget",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "author": "Shevchenko Taras <back.neomind@gmail.com>",
     "homepage": "http://tgsoft.in/",
     "private": false,
@@ -10,7 +10,7 @@
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve",
-        "release:android": "ionic cordova build android --prod --release --profile"
+        "dist:android": "ionic cordova build android --prod --release --profile"
     },
     "dependencies": {
         "@angular/common": "4.1.3",

@@ -17,5 +17,6 @@
   "PLEASE_AUTHORIZE": "Будь ласка - авторизуйтесь!",
   "UNKNOWN_ERROR": "Не визначена помилка",
   "LOADING_MORE_DATA": "Завантажую проекти...",
-  "ALREADY_LIKED": "Пдтримано"
+  "ALREADY_LIKED": "Пдтримано",
+  "FB_URL": "https://www.facebook.com/civilscouncil"
 }

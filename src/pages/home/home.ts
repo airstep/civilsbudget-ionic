@@ -91,6 +91,8 @@ export class HomePage {
     infiniteScroll.complete();
   }
 
+  // If you wish to use this somewere - alerts cannot be reused. 
+  // So, make a new one each time.
   initLoader() {
     let loadingMessage = this.translate.instant('LOADING')
     this.loader = this.loadingCtrl.create({
@@ -99,20 +101,19 @@ export class HomePage {
   }
   
   openDetails(p) {
-    if (!this.loader) 
-      this.initLoader();
-    this.loader.present();
+    //this.initLoader();
+    //this.loader.present();
     this.navCtrl.push('DetailsPage', { project: p })
   }
 
   ionViewDidLeave(){
-    if (this.loader)
-      this.loader.dismiss();
+    //if (this.loader)
+    //  this.loader.dismiss();
   }
 
   openFB() {
     let browser: InAppBrowserObject = this.iab.create(
-      "https://fb.me",
+      this.translate.instant('FB_URL'),
       "_self",
       this.api.getBrowserOptions()
     )

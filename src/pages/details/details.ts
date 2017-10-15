@@ -42,7 +42,7 @@ export class DetailsPage {
 
   openFB() {
     let browser: InAppBrowserObject = this.iab.create(
-      "https://fb.me",
+      this.translate.instant('FB_URL'),
       "_self",
       this.api.getBrowserOptions()
     )
