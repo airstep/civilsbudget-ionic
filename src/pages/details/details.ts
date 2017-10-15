@@ -36,17 +36,8 @@ export class DetailsPage {
       this.picture = this.project.picture;
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad DetailsPage');
-  }
-
   openFB() {
-    let browser: InAppBrowserObject = this.iab.create(
-      this.translate.instant('FB_URL'),
-      "_self",
-      this.api.getBrowserOptions()
-    )
-    browser.show()    
+    this.api.openFacebookPage();    
   }
 
   back() {

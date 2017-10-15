@@ -212,4 +212,13 @@ export class ApiProvider {
       browser.show()
     });
   }
+
+  openFacebookPage() {
+    let browser: InAppBrowserObject = this.iab.create(
+      this.translate.instant('FB_URL'),
+      "_self",
+      this.getBrowserOptions()
+    )
+    browser.show()    
+  }
 }

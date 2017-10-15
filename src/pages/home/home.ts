@@ -101,23 +101,11 @@ export class HomePage {
   }
   
   openDetails(p) {
-    //this.initLoader();
-    //this.loader.present();
     this.navCtrl.push('DetailsPage', { project: p })
   }
 
-  ionViewDidLeave(){
-    //if (this.loader)
-    //  this.loader.dismiss();
-  }
-
   openFB() {
-    let browser: InAppBrowserObject = this.iab.create(
-      this.translate.instant('FB_URL'),
-      "_self",
-      this.api.getBrowserOptions()
-    )
-    browser.show()
+    this.api.openFacebookPage();
   }
 
   async like(project) {
