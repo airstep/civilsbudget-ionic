@@ -1,20 +1,3 @@
-<ion-header> 
-  <expandable-header [scrollArea]="mycontent" headerHeight="266">
-    <div class="header">
-      <img src='assets/img/header.png'>
-      <div class="header_gradient">
-          <img src='assets/img/gradient.png'>
-      </div>
-      <div class="header_logo">
-          <img src='assets/img/header_logo.png'>
-      </div>      
-      <div class="header_text">
-        {{'HEADER_TEXT' | translate}}
-      </div>
-    </div>    
-  </expandable-header>  
-</ion-header>
-  
 <ion-content fullscreen #mycontent>
   <ion-refresher (ionRefresh)="pullRefresh($event)">
     <ion-refresher-content 
@@ -25,15 +8,21 @@
     </ion-refresher-content>
   </ion-refresher>                      
   
-  <div class="spinner" *ngIf="isLoading === true && projects.length === 0">
-    <ion-spinner name="ios">{{ 'LOADING' | translate }}</ion-spinner>
-  </div>
-
-  <div class="notFound" *ngIf="isLoading === false && projects.length === 0 && isLoadingOnPull === false">
-    <p text-center>{{ 'NO_PROJECTS_FOUND' | translate }}</p>
-  </div>
-  
   <ion-list>    
+    <ion-list-header>
+      <div class="header_top">
+        <img src='assets/img/header.png'>
+        <div class="header_gradient">
+          <img src='assets/img/gradient.png'>
+        </div>
+        <div class="header_logo" *ngIf="city.logo">
+          <img [src]="city.logo">
+        </div>      
+        <div class="header_text" (click)="selectCity()">
+          {{ city.location }} <ion-icon name="md-arrow-dropdown"></ion-icon>
+        </div>
+      </div>                
+    </ion-list-header>     
     <ion-card *ngFor="let p of projects">
       <ion-item>
         <ion-avatar item-start *ngIf="p.avatar_owner">
@@ -73,6 +62,14 @@
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
+  <div class="spinner" *ngIf="isLoading === true && projects.length === 0">
+    <ion-spinner name="ios">{{ 'LOADING' | translate }}</ion-spinner>
+  </div>
+
+  <div class="notFound" *ngIf="isLoading === false && projects.length === 0 && isLoadingOnPull === false">
+    <p text-center>{{ 'NO_PROJECTS_FOUND' | translate }}</p>
+  </div>
+    
 </ion-content>
 
 <ion-footer>

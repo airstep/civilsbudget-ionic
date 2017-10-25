@@ -1,0 +1,12 @@
+<ion-content>
+  <ion-list>   
+    <ion-card *ngFor="let p of places" (click)="openCity(p)">
+      <img [src]="p.background_image" *ngIf="p.background_image" id="bg">
+      <div class="card-logo" *ngIf="p.logo"><img [src]="p.logo" id="logo"></div>
+      <div class="card-location">{{ p.location }}</div>
+      <div class="card-title">{{ p.title }}</div>
+      <div class="card-subtitle">{{p.voted}} {{'LIKES' | translate}}</div>
+      <div class="card-date-range">{{ p.date_from | amDateFormat: 'DD.MM.YYYY' }} - {{ p.date_to | amDateFormat: 'DD.MM.YYYY' }}</div>
+    </ion-card>    
+  </ion-list>  
+</ion-content>

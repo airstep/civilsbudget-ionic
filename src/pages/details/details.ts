@@ -20,7 +20,8 @@ export class DetailsPage {
 
   private project;
   private alert: Alert
-  
+  private city;
+
   private picture: string = 'assets/img/header.png';
 
   constructor(
@@ -32,6 +33,8 @@ export class DetailsPage {
     private iab: InAppBrowser    
   ) {
     this.project = this.navParams.get('project');    
+    this.city = this.navParams.get('city');    
+    
     if (this.project.picture)
       this.picture = this.project.picture;
   }
@@ -47,7 +50,7 @@ export class DetailsPage {
   async like() {
     if (this.project.vote) return;
     try {
-      let result = await this.api.likeProject(this.project.id)
+      let result = await this.api.likeProject(this.city.id, this.project.id)
       if (result) {
         if (result.danger) {
           this.alert = this.toast.showAlert(result.danger);

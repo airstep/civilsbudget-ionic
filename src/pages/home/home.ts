@@ -1,7 +1,7 @@
 import { ToastService } from './../../providers/toast';
 import { TranslateService } from '@ngx-translate/core'
 import { Component } from '@angular/core'
-import { NavController, IonicPage, Alert, LoadingController } from 'ionic-angular'
+import { NavController, IonicPage, Alert, LoadingController, NavParams } from 'ionic-angular'
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser'
 
 import { ApiProvider } from '../../providers/api'
@@ -30,9 +30,11 @@ export class HomePage {
   
   private alert: Alert
   private loader
+  private city
 
   constructor(
     public navCtrl: NavController,
+    public navParams: NavParams,
     public api: ApiProvider,
     public translate: TranslateService,
     public toast: ToastService,
@@ -40,8 +42,10 @@ export class HomePage {
     private iab: InAppBrowser
   ) {
     this.projects = []
+    this.allProjects = []
     this.isLoading = false
     this.isLoadingOnPull = false
+    this.city = this.navParams.get('city')
   }
 
   ngAfterViewInit() {
@@ -61,7 +65,8 @@ export class HomePage {
   async refresh() {
     try {
       this.isLoading = true
-      let json = await this.api.getProjects()
+      let json = await this.api.getProjects(this.city.id)
+      console.log(json)
       this.allProjects = json.projects
       
       this.projects = [];
@@ -79,12 +84,14 @@ export class HomePage {
 
   doInfinite(infiniteScroll) {
     console.log('Begin async operation');
-    if (this.projects.length < this.allProjects.length) {
-      let offset = this.projects.length + 1;
-      for (let i = offset; i < offset + this.DEFAULT_PROJECT_COUNT; i++) {
-        if (i < this.allProjects.length)
-          this.projects.push(this.allProjects[i]);
-        else break;
+    if (this.projects && this.allProjects) {
+      if (this.projects.length < this.allProjects.length) {
+        let offset = this.projects.length + 1;
+        for (let i = offset; i < offset + this.DEFAULT_PROJECT_COUNT; i++) {
+          if (i < this.allProjects.length)
+            this.projects.push(this.allProjects[i]);
+          else break;
+        }
       }
     }
     console.log('Async operation has ended');
@@ -101,7 +108,7 @@ export class HomePage {
   }
   
   openDetails(p) {
-    this.navCtrl.push('DetailsPage', { project: p })
+    this.navCtrl.push('DetailsPage', { city: this.city, project: p })
   }
 
   openFB() {
@@ -110,7 +117,7 @@ export class HomePage {
 
   async like(project) {
     try {
-      let result = await this.api.likeProject(project.id)
+      let result = await this.api.likeProject(this.city.id, project.id)
       if (result) {
         if (result.danger) {
           this.alert = this.toast.showAlert(result.danger);
@@ -125,5 +132,9 @@ export class HomePage {
       console.log(err);
       this.toast.showError(err);
     }
+  }
+
+  selectCity() {
+    this.navCtrl.setRoot('IndexPage')
   }
 }

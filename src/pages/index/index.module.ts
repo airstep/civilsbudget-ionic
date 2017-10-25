@@ -1,20 +1,17 @@
-import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { HomePage } from './home';
+import { IndexPage } from './index';
 import { MomentModule } from 'angular2-moment';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
-    HomePage,
+    IndexPage,
   ],
   imports: [
-    IonicPageModule.forChild(HomePage),
+    IonicPageModule.forChild(IndexPage),
     TranslateModule.forChild(),
     MomentModule  
   ],
-  exports: [
-    HomePage
-  ]
 })
-export class HomePageModule {}
+export class IndexPageModule {}

@@ -1,5 +1,19 @@
 page-details {
-  div.header {
+  .list-header {
+    padding: 0px !important;      
+
+    .item-inner   {
+      background-color: red;
+      
+      padding: 0px !important;
+      margin: 0px !important;
+      .label {
+        margin: 0px !important;          
+      }
+    }
+  }
+  
+  div.header_main {
     width: 100%;
     position: relative;
     display:flex;
@@ -49,7 +63,7 @@ page-details {
     font-weight: bold;
   }
 
-  ion-header {
+  ion-list-header {
     ion-row {
       padding: 0px;
     }
@@ -68,6 +82,8 @@ page-details {
       p {
         font-size: 10px;
         padding: 2px;
+        color: white;
+        margin-top: 2px;
       }
     }
   
@@ -81,6 +97,8 @@ page-details {
       p {
         font-size: 10px;
         padding: 2px;
+        color: white;
+        margin-top: 2px;
       }
     }      
   }

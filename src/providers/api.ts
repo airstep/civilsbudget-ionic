@@ -16,11 +16,15 @@ export class ApiProvider {
   public baseAuthURL = "https://bankid.privatbank.ua/DataAccessService";
   private baseDataURL = "https://bankid.privatbank.ua/ResourceService";
 
-  private baseURL = "https://vote.imisto.com.ua/api";
+  // REAL URL's
+  //private baseURL = "https://vote.imisto.com.ua/api";
+  //public codeURL = "https://vote.imisto.com.ua/api/login?code=";
+  // UNCOMMENT
 
-  //private baseURL = "http://test.vote.imisto.com.ua/api";
-
-  public codeURL = "https://vote.imisto.com.ua/api/login?code=";
+  // !!! FOR TEST ONLY !!!
+  private baseURL = "http://test.vote.imisto.com.ua/api";
+  public codeURL = "https://test.vote.imisto.com.ua/api/login?code=";
+  // !!! COMMENT THIS AFTER TEST END !!!
 
   public code = "";
   
@@ -60,8 +64,8 @@ export class ApiProvider {
     return this.options;
   }
 
-  public async getProjects() {
-    return this.get("/projects")
+  public async getProjects(votingId) {
+    return this.get("/votings/"+ votingId + "/projects");
   }
 
   public isAuthorized(): boolean {
@@ -82,11 +86,18 @@ export class ApiProvider {
     this.user = await this.get("/authorization?code=" + this.bankIdAuth.access_token)
   }
   
-  public async getProject(id) {
-    return this.get("/projects/" + id)
+  // api/votings/{voting_id}/projects/{project_id}?clid={clid}
+  public async getProject(votingId, id) {
+    await this.checkAuth();
+
+    if (this.isAuthorized()) {        
+      return this.get("/votings/" + votingId + "/projects/" + id + "?clid" + this.clid)
+    } else {
+      this.toast.show(this.translate.instant('PLEASE_AUTHORIZE'));      
+    }
   }
 
-  public async likeProject(id) {
+  public async checkAuth() {
     if (!this.code) {
       let result = await this.bankIdLogin()
       if (!result) return // skip cancel
@@ -94,10 +105,25 @@ export class ApiProvider {
   
     if (!this.isAuthorized())
       await this.civilAuth();
+  }
+
+  public async likeProject(cityId, projectId) {
+    await this.checkAuth();
 
     if (this.isAuthorized()) {
-      return this.http.post(this.baseURL + "/projects/" + id + "/like", { clid: this.user.clid })
-        .map(res => res.json())
+      let headers = new Headers({
+        'X-API-KEY': '',
+        'Content-Type' : 'application/json'
+      });
+      let options = new RequestOptions({ headers: headers });
+      let data = JSON.stringify({
+        clid: this.user.clid
+      });
+      return this.http.post(this.baseURL + "/votings/" + cityId + "/projects/" + projectId + "/like", data, options)
+        .map(res => {
+          console.log(res)
+          return res.json()
+        })
         .catch(this.catchError)
         .toPromise();
     } else {
@@ -105,12 +131,16 @@ export class ApiProvider {
     }
   }
 
+  public getVotings() {
+    return this.get("/votings")
+  }
+
   public async get(path) {
     return this.http.get(this.baseURL + path)
-    .timeout(this.timeoutMS)
+    //.timeout(this.timeoutMS)
     .map(res => {
+      console.log(res)
       let result = res.json()
-      console.log(result)
       return result
     })
     .catch(this.catchError)
@@ -138,8 +168,13 @@ export class ApiProvider {
   catchError(error: Response | any){
     let errMsg: string;
     if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
+      let err = '';
+      if (error.text() && error.text().indexOf('<html') === -1) {
+        const body = error.json() || '';
+        err = body.error || JSON.stringify(body);
+      } else {
+        //err = error.text();
+      }
       errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
     } else {
       errMsg = error.message ? error.message : error.toString();
@@ -148,8 +183,16 @@ export class ApiProvider {
     return Observable.throw(errMsg);
   }
   
-  // Auth
+  isJsonString(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }  
 
+  // Auth
   async bankIdLogin() {
     await this.initSettings()
 
