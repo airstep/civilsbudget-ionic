@@ -1,7 +1,7 @@
 import { ToastService } from './../../providers/toast'
 import { TranslateService } from '@ngx-translate/core'
 import { Component } from '@angular/core'
-import { NavController, IonicPage, Alert, LoadingController, NavParams } from 'ionic-angular'
+import { NavController, IonicPage, Alert, NavParams } from 'ionic-angular'
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser'
 import { Storage } from '@ionic/storage'
 
@@ -35,7 +35,6 @@ export class HomePage {
   private isLoadingOnPull: boolean
   
   private alert: Alert
-  private loader
   private city
 
   constructor(
@@ -46,7 +45,6 @@ export class HomePage {
     public toast: ToastService,
     public events: Events,
     public network: NetworkService,
-    public loadingCtrl: LoadingController,
     private firebaseAnalytics: FirebaseAnalytics,
     private iab: InAppBrowser
   ) {
@@ -115,15 +113,6 @@ export class HomePage {
     }
     console.log('Async operation has ended')
     infiniteScroll.complete()
-  }
-
-  // If you wish to use this somewere - alerts cannot be reused. 
-  // So, make a new one each time.
-  initLoader() {
-    let loadingMessage = this.translate.instant('LOADING')
-    this.loader = this.loadingCtrl.create({
-      content: loadingMessage
-    })    
   }
   
   openDetails(p) {

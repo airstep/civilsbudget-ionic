@@ -1,11 +1,12 @@
 import { Component } from '@angular/core'
-import { IonicPage, NavController } from 'ionic-angular'
+import { IonicPage, NavController, LoadingController, Loading } from 'ionic-angular'
 
 import { ToastService } from './../../providers/toast'
 import { ApiProvider } from '../../providers/api'
 import { InAppBrowser } from '@ionic-native/in-app-browser'
 
-import { NetworkService } from './../../providers/network';
+import { NetworkService } from './../../providers/network'
+import { TranslateService } from '@ngx-translate/core'
 
 @IonicPage()
 @Component({
@@ -15,17 +16,23 @@ import { NetworkService } from './../../providers/network';
     ApiProvider,
     ToastService,
     InAppBrowser,
-    NetworkService
+    NetworkService,
+    ToastService
   ]
 })
 export class IndexPage {
 
   private places
+  private firstInit: boolean
+  private loader: Loading
 
   constructor(
     private api: ApiProvider,
     public network: NetworkService,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
+    public translate: TranslateService,
+    public toast: ToastService
   ) {
     this.places = []
   }
@@ -35,9 +42,32 @@ export class IndexPage {
     this.initPlaces()
   }
 
+  ionViewDidLeave(){
+   if (this.loader)
+    this.loader.dismiss()
+  }
+
+  showLoader() {
+    let loadingMessage = this.translate.instant('LOADING')
+    this.loader = this.loadingCtrl.create({
+      content: loadingMessage
+    })
+    this.loader.present()    
+  }
+
   async initPlaces() {
-    let result = await this.api.getVotings()
-    this.places = result.votings
+    this.showLoader()
+    try {
+      let result = await this.api.getVotings()
+      this.places = result.votings
+    } catch(err) {
+      console.log(err)
+      if (err.message)
+        this.toast.show(err.message)
+    } finally {
+      this.loader.dismiss()
+    }
+    this.firstInit = true
     console.log(this.places)
   }
 

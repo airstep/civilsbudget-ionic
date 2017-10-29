@@ -12,6 +12,7 @@ import 'rxjs/add/operator/catch'
 import 'rxjs/add/observable/throw'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/toPromise'
+import 'rxjs/add/operator/timeout'
 
 @Injectable()
 export class ApiProvider {
@@ -19,13 +20,13 @@ export class ApiProvider {
   private baseDataURL = "https://bankid.privatbank.ua/ResourceService"
 
   // REAL URL's
-  //private baseURL = "https://vote.imisto.com.ua/api"
-  //public codeURL = "https://vote.imisto.com.ua/api/login?code="
+  private baseURL = "https://vote.imisto.com.ua/api"
+  public codeURL = "https://vote.imisto.com.ua/api/login?code="
   // UNCOMMENT
 
   // !!! FOR TEST ONLY !!!
-  private baseURL = "https://test.vote.imisto.com.ua/api"
-  public codeURL = "https://test.vote.imisto.com.ua/api/login?code="
+  //private baseURL = "https://test.vote.imisto.com.ua/api"
+  //public codeURL = "https://test.vote.imisto.com.ua/api/login?code="
   // !!! COMMENT THIS AFTER TEST END !!!
 
   public code = ""
@@ -33,7 +34,7 @@ export class ApiProvider {
   public user: any
   public bankIdAuth: any
 
-  private timeoutMS = 10000
+  private timeoutMS = 20000
 
   private settings
 
@@ -156,7 +157,7 @@ export class ApiProvider {
 
   public async get(path) {
     return this.http.get(this.baseURL + path)
-    //.timeout(this.timeoutMS)
+    .timeout(this.timeoutMS)
     .map(res => {
       console.log(res)
       let result = res.json()
