@@ -188,11 +188,13 @@ export class ApiProvider {
 
   catchError(error: Response | any){
     let errMsg: string
+    let result: Error
     if (error instanceof Response) {
       let err = ''
       if (error.text() && error.text().indexOf('<html') === -1) {
         const body = error.json() || ''
         err = body.error || JSON.stringify(body)
+        if (body) result = body;
       } else {
         //err = error.text()
       }
@@ -201,7 +203,7 @@ export class ApiProvider {
       errMsg = error.message ? error.message : error.toString()
     }
     console.error(errMsg)
-    return Observable.throw(errMsg)
+    return Observable.throw(result ? result : errMsg)
   }
   
   isJsonString(str) {

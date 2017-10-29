@@ -120,6 +120,7 @@ export class HomePage {
   }
 
   async vote(project) {
+    let isWasAuth = false;
     try {
       if (this.network.isOffline()) {
         this.alert = this.toast.showAlert(this.translate.instant('CONN_PROBLEM_OFFLINE'))
@@ -129,6 +130,9 @@ export class HomePage {
         this.alert = this.toast.showAlert(this.translate.instant('WARN_ALREADY_VOTED'))
         return
       }        
+      
+      isWasAuth = await this.api.isAuthorized()
+
       let result = await this.api.voteProject(this.city.id, project.id)
       if (result) {
         if (result.danger) {
@@ -143,9 +147,13 @@ export class HomePage {
       }
     } catch(err) {
       console.log(err)
-      if (err.message)
-        this.alert = this.toast.showAlert(err.message)
-      else
+      if (err.danger)
+        this.alert = this.toast.showAlert(err.danger)    
+      else if (err.warning) {
+        this.alert = this.toast.showAlert(err.warning)
+        if (!isWasAuth && this.api.isAuthorized()) 
+          this.refresh()
+      } else
         this.toast.showError(err)
     }
   }

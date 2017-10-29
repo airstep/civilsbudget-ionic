@@ -76,8 +76,10 @@ export class DetailsPage {
      }
     } catch(err) {
       console.log(err)
-      if (err.message)
-        this.alert = this.toast.showAlert(err.message)
+      if (err.danger)
+        this.alert = this.toast.showAlert(err.danger)    
+      else if (err.warning)
+        this.alert = this.toast.showAlert(err.warning)
       else
         this.toast.showError(err)
     }
