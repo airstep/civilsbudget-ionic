@@ -18,16 +18,11 @@ page-home {
     align-items:center;
     justify-content:center;   
     img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;      
+      max-width:100%;
+      height:auto !important;  
     }     
   }
-
-  ion-refresher {
-    z-index: 1000 !important;
-  } 
-
+  
   .header_gradient {
     top: 0;
     left: 0;    

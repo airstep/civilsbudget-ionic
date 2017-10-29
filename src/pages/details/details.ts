@@ -27,7 +27,7 @@ export class DetailsPage {
   private alert: Alert
   private city
 
-  private picture: string = 'assets/img/header.png'
+  private picture: string = 'assets/img/header.jpg'
 
   constructor(
     public navCtrl: NavController, 
