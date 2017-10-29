@@ -11,7 +11,7 @@ page-index {
 
   .card-title {
     position: absolute;
-    top: 40%;
+    top: 44%;
     font-size: 2.0em;
     width: 100%;
     font-weight: bold;
@@ -21,8 +21,12 @@ page-index {
   .card-subtitle {
     font-size: 1.0em;
     position: absolute;
-    top: 60%;
-    width: 100%;
+    //top: 60%;
+    //width: 100%;
+    bottom: 0;
+    left: 0;
+    margin-bottom: 5px;
+    margin-left: 5px;    
     color: #fff;
   }
 

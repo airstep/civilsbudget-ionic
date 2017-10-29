@@ -33,8 +33,6 @@ export class ApiProvider {
   public user: any
   public bankIdAuth: any
 
-  private clid = ""
-
   private timeoutMS = 10000
 
   private settings
@@ -111,7 +109,7 @@ export class ApiProvider {
     await this.checkAuth()
 
     if (await this.isAuthorized()) {        
-      return this.get("/votings/" + votingId + "/projects/" + id + "?clid" + this.clid)
+      return this.get("/votings/" + votingId + "/projects/" + id)
     } else {
       this.toast.show(this.translate.instant('PLEASE_AUTHORIZE'))      
     }
@@ -138,7 +136,7 @@ export class ApiProvider {
       })
       let options = new RequestOptions({ headers: headers })
       let data = JSON.stringify({
-        clid: this.user.clid
+        //clid: this.user.clid
       })
       return this.http.post(this.baseURL + "/votings/" + cityId + "/projects/" + projectId + "/vote", data, options)
         .map(res => {
