@@ -20,17 +20,17 @@ export class ApiProvider {
   private baseDataURL = "https://bankid.privatbank.ua/ResourceService"
 
   // REAL URL's
-  private baseURL = "https://vote.imisto.com.ua/api"
-  public codeURL = "https://vote.imisto.com.ua/api/login?code="
+  //private baseURL = "https://vote.imisto.com.ua/api"
+  //public codeURL = "https://vote.imisto.com.ua/api/login?code="
   // UNCOMMENT
 
   // !!! FOR TEST ONLY !!!
-  //private baseURL = "https://test.vote.imisto.com.ua/api"
-  //public codeURL = "https://test.vote.imisto.com.ua/api/login?code="
+  private baseURL = "https://test.vote.imisto.com.ua/api"
+  public codeURL = "https://test.vote.imisto.com.ua/api/login?code="
   // !!! COMMENT THIS AFTER TEST END !!!
 
   public code = ""
-  
+
   public user: any
   public bankIdAuth: any
 
@@ -49,13 +49,13 @@ export class ApiProvider {
   }
 
   constructor(
-    public http: Http, 
+    public http: Http,
     private iab: InAppBrowser,
     private translate: TranslateService,
     private platform: Platform,
     private storage: Storage,
     private toast: ToastService
-  ) { 
+  ) {
   }
 
   async initUserFromSettings() {
@@ -85,7 +85,7 @@ export class ApiProvider {
     if (this.user) {
       return true
     } else {
-      await this.initUserFromSettings()      
+      await this.initUserFromSettings()
     }
     return this.user !== undefined
   }
@@ -105,14 +105,14 @@ export class ApiProvider {
     if (this.user && this.storage)
       this.storage.set('user', JSON.stringify(this.user))
   }
-  
+
   public async getProject(votingId, id) {
     await this.checkAuth()
 
-    if (await this.isAuthorized()) {        
+    if (await this.isAuthorized()) {
       return this.get("/votings/" + votingId + "/projects/" + id)
     } else {
-      this.toast.show(this.translate.instant('PLEASE_AUTHORIZE'))      
+      this.toast.show(this.translate.instant('PLEASE_AUTHORIZE'))
     }
   }
 
@@ -147,7 +147,7 @@ export class ApiProvider {
         .catch(this.catchError)
         .toPromise()
     } else {
-      this.toast.show(this.translate.instant('PLEASE_AUTHORIZE'))      
+      this.toast.show(this.translate.instant('PLEASE_AUTHORIZE'))
     }
   }
 
@@ -204,7 +204,7 @@ export class ApiProvider {
     console.error(errMsg)
     return Observable.throw(result ? result : errMsg)
   }
-  
+
   isJsonString(str) {
     try {
       JSON.parse(str)
@@ -212,14 +212,14 @@ export class ApiProvider {
       return false
     }
     return true
-  }  
+  }
 
   // Auth
   async bankIdLogin() {
     await this.initSettings()
 
     let baseAuthURL = this.getBaseAuthURL()
-    
+
     return new Promise((resolve, reject) => {
       let browser: InAppBrowserObject = this.iab.create(
         baseAuthURL,
@@ -243,7 +243,7 @@ export class ApiProvider {
           resolve(false)
         }
       })
-      
+
       browser.on("loaderror").subscribe(event => {
         console.log(event)
         reject(event)
@@ -254,7 +254,7 @@ export class ApiProvider {
         if (event.url.startsWith(this.codeURL)) {
           browser.executeScript({ code: "document.body.innerText" })
             .then(result => {
-                console.log(result)              
+                console.log(result)
                 if (result.length > 0) {
                   this.bankIdAuth = JSON.parse(result[0])
                   browser.close()
@@ -284,6 +284,6 @@ export class ApiProvider {
       "_self",
       this.getBrowserOptions()
     )
-    browser.show()    
+    browser.show()
   }
 }

@@ -10,8 +10,12 @@
     </ion-card>    
   </ion-list>  
   
+  <div class="spinner" *ngIf="isLoading === true && places.length === 0">
+    <ion-spinner name="ios">{{ 'LOADING' | translate }}</ion-spinner>
+  </div>
+
   <!-- show no one city warning -->
-  <ion-list padding no-lines *ngIf="network.isOnline() && places.length === 0 && firstInit" class="transparent">
+  <ion-list padding no-lines *ngIf="network.isOnline() && places.length === 0 && firstInit && !isLoading" class="transparent">
     <div class="logoWarningPlace">
       <img src='assets/svg/city.svg' class="noCityImage"/>    
     </div>
@@ -25,7 +29,7 @@
     </div>
   </ion-list>    
   <!-- show no connection warning -->
-  <ion-list padding no-lines *ngIf="network.isOffline()" class="transparent">
+  <ion-list padding no-lines *ngIf="network.isOffline() && !isLoading" class="transparent">
     <div class="logoWarningPlace">
       <img src='assets/svg/no_connection.svg' class="noConnectionImage"/>    
     </div>

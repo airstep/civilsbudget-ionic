@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { IonicPage, NavController, LoadingController, Loading } from 'ionic-angular'
+import { IonicPage, NavController } from 'ionic-angular'
 
 import { ToastService } from './../../providers/toast'
 import { ApiProvider } from '../../providers/api'
@@ -24,13 +24,12 @@ export class IndexPage {
 
   private places
   private firstInit: boolean
-  private loader: Loading
+  private isLoading: boolean
 
   constructor(
     private api: ApiProvider,
     public network: NetworkService,
     public navCtrl: NavController,
-    public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public toast: ToastService
   ) {
@@ -42,22 +41,9 @@ export class IndexPage {
     this.initPlaces()
   }
 
-  ionViewDidLeave(){
-   if (this.loader)
-    this.loader.dismiss()
-  }
-
-  showLoader() {
-    let loadingMessage = this.translate.instant('LOADING')
-    this.loader = this.loadingCtrl.create({
-      content: loadingMessage
-    })
-    this.loader.present()    
-  }
-
   async initPlaces() {
-    this.showLoader()
     try {
+      this.isLoading = true;
       let result = await this.api.getVotings()
       this.places = result.votings
     } catch(err) {
@@ -65,7 +51,7 @@ export class IndexPage {
       if (err.message)
         this.toast.show(err.message)
     } finally {
-      this.loader.dismiss()
+      this.isLoading = false;
     }
     this.firstInit = true
     console.log(this.places)
