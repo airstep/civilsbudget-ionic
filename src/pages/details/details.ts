@@ -100,12 +100,14 @@ export class DetailsPage {
       console.log(err)
       if (err.danger)
         this.alert = this.toast.showAlert(err.danger)    
-      else if (err.warning)
+      else if (err.warning) {
         this.alert = this.toast.showAlert(err.warning)
+        this.project.is_voted = true
         if (!isWasAuth && this.api.isAuthorized()) 
           this.sendRefreshEvent()    
-      else
-        this.toast.showError(err)
+      } else {
+        this.toast.showError(JSON.stringify(err))
+      }
     }
   }  
 

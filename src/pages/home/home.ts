@@ -165,7 +165,7 @@ export class HomePage {
         if (!isWasAuth && this.api.isAuthorized()) 
           this.refresh()
       } else
-        this.toast.showError(err)
+        this.toast.showError(JSON.stringify(err))
     }
   }
 
