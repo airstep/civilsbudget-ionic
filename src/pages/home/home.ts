@@ -1,13 +1,15 @@
-import { ToastService } from './../../providers/toast';
+import { ToastService } from './../../providers/toast'
 import { TranslateService } from '@ngx-translate/core'
 import { Component } from '@angular/core'
 import { NavController, IonicPage, Alert, LoadingController, NavParams } from 'ionic-angular'
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser'
+import { Storage } from '@ionic/storage'
 
 import { ApiProvider } from '../../providers/api'
 
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/timeout'
+import { NetworkService } from '../../providers/network';
 
 @IonicPage()
 @Component({
@@ -16,11 +18,12 @@ import 'rxjs/add/operator/timeout'
   providers: [
     ApiProvider,
     InAppBrowser,
-    ToastService
+    ToastService,
+    NetworkService
   ]
 })
 export class HomePage {
-  private DEFAULT_PROJECT_COUNT = 5;
+  private DEFAULT_PROJECT_COUNT = 5
 
   private projects
   private allProjects
@@ -38,6 +41,7 @@ export class HomePage {
     public api: ApiProvider,
     public translate: TranslateService,
     public toast: ToastService,
+    public network: NetworkService,
     public loadingCtrl: LoadingController,
     private iab: InAppBrowser
   ) {
@@ -69,33 +73,33 @@ export class HomePage {
       console.log(json)
       this.allProjects = json.projects
       
-      this.projects = [];
+      this.projects = []
       for (let i = 0; i < this.DEFAULT_PROJECT_COUNT; i++) {
-        this.projects.push(this.allProjects[i]);
+        this.projects.push(this.allProjects[i])
       }
 
     } catch(err) {
       console.log(err)
-      this.toast.showError(err);
+      this.toast.showError(err)
     } finally {
       this.isLoading = false
     }
   }
 
   doInfinite(infiniteScroll) {
-    console.log('Begin async operation');
+    console.log('Begin async operation')
     if (this.projects && this.allProjects) {
       if (this.projects.length < this.allProjects.length) {
-        let offset = this.projects.length + 1;
+        let offset = this.projects.length + 1
         for (let i = offset; i < offset + this.DEFAULT_PROJECT_COUNT; i++) {
           if (i < this.allProjects.length)
-            this.projects.push(this.allProjects[i]);
-          else break;
+            this.projects.push(this.allProjects[i])
+          else break
         }
       }
     }
-    console.log('Async operation has ended');
-    infiniteScroll.complete();
+    console.log('Async operation has ended')
+    infiniteScroll.complete()
   }
 
   // If you wish to use this somewere - alerts cannot be reused. 
@@ -104,7 +108,7 @@ export class HomePage {
     let loadingMessage = this.translate.instant('LOADING')
     this.loader = this.loadingCtrl.create({
       content: loadingMessage
-    });    
+    })    
   }
   
   openDetails(p) {
@@ -112,25 +116,37 @@ export class HomePage {
   }
 
   openFB() {
-    this.api.openFacebookPage();
+    this.api.openFacebookPage()
   }
 
-  async like(project) {
+  async vote(project) {
     try {
-      let result = await this.api.likeProject(this.city.id, project.id)
+      if (this.network.isOffline()) {
+        this.alert = this.toast.showAlert(this.translate.instant('CONN_PROBLEM_OFFLINE'))
+        return
+      }
+      if (project.is_voted) {
+        this.alert = this.toast.showAlert(this.translate.instant('WARN_ALREADY_VOTED'))
+        return
+      }        
+      let result = await this.api.voteProject(this.city.id, project.id)
       if (result) {
         if (result.danger) {
-          this.alert = this.toast.showAlert(result.danger);
-        } else {
-          if (result.voted_project) {
-            project.likes_count++;
-            project.vote = true;
-          }
+          this.alert = this.toast.showAlert(result.danger)
+        } else if (result.warning) {
+          this.alert = this.toast.showAlert(result.warning)
+        } else if (result.success) {
+          project.voted++
+          project.is_voted = true
+          this.alert = this.toast.showAlert(this.translate.instant('THANKS_BY_VOTE'))
         }
       }
     } catch(err) {
-      console.log(err);
-      this.toast.showError(err);
+      console.log(err)
+      if (err.message)
+        this.alert = this.toast.showAlert(err.message)
+      else
+        this.toast.showError(err)
     }
   }
 

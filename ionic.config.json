@@ -1,6 +1,6 @@
 {
   "name": "civil-budget",
-  "app_id": "",
+  "app_id": "898810af",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}

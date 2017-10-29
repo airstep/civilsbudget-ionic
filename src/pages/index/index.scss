@@ -4,8 +4,8 @@ page-index {
     text-align: center;
     #bg {
       object-fit: cover;
-      min-height: 130pt;
-      height: 130pt;
+      min-height: 140pt;
+      height: 140pt;
     }
   }
 
@@ -58,5 +58,18 @@ page-index {
     margin-right: 5px;
     color: #fff;
     font-size: 1.3em;
+  }  
+  .noConnectionImage {
+    width: 140pt;
+    height: 140pt;
+    background: transparent !important;    
+  }  
+
+  span {
+    white-space: pre-line;
+    a {
+      color: color($colors, dark);
+      text-decoration: none;    
+    }
   }  
 }

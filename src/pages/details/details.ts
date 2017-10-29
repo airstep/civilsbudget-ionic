@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Alert } from 'ionic-angular';
+import { Component } from '@angular/core'
+import { IonicPage, NavController, NavParams, Alert } from 'ionic-angular'
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser'
 
 import { ApiProvider } from '../../providers/api'
-import { ToastService } from './../../providers/toast';
+import { ToastService } from './../../providers/toast'
 import { TranslateService } from '@ngx-translate/core'
+import { NetworkService } from '../../providers/network';
 
 @IonicPage()
 @Component({
@@ -13,16 +14,17 @@ import { TranslateService } from '@ngx-translate/core'
   providers: [
     ApiProvider,
     InAppBrowser,
-    ToastService
+    ToastService,
+    NetworkService
   ]  
 })
 export class DetailsPage {
 
-  private project;
+  private project
   private alert: Alert
-  private city;
+  private city
 
-  private picture: string = 'assets/img/header.png';
+  private picture: string = 'assets/img/header.png'
 
   constructor(
     public navCtrl: NavController, 
@@ -30,40 +32,54 @@ export class DetailsPage {
     public api: ApiProvider,
     public translate: TranslateService,
     public toast: ToastService,
+    public network: NetworkService,
     private iab: InAppBrowser    
   ) {
-    this.project = this.navParams.get('project');    
-    this.city = this.navParams.get('city');    
+    this.project = this.navParams.get('project')    
+    this.city = this.navParams.get('city')    
     
     if (this.project.picture)
-      this.picture = this.project.picture;
+      this.picture = this.project.picture
   }
 
   openFB() {
-    this.api.openFacebookPage();    
+    this.api.openFacebookPage()    
   }
 
   back() {
-    this.navCtrl.pop();
+    this.navCtrl.pop()
   }
 
-  async like() {
-    if (this.project.vote) return;
+  async vote() {
+    if (this.network.isOffline()) {
+      this.alert = this.toast.showAlert(this.translate.instant('CONN_PROBLEM_OFFLINE'))
+      return
+    }  
+    if (this.project.is_voted) {
+      this.alert = this.toast.showAlert(this.translate.instant('WARN_ALREADY_VOTED'))
+      return
+    }
     try {
-      let result = await this.api.likeProject(this.city.id, this.project.id)
+      let result = await this.api.voteProject(this.city.id, this.project.id)
       if (result) {
         if (result.danger) {
-          this.alert = this.toast.showAlert(result.danger);
-        } else {
-          if (result.voted_project) {
-            this.project.likes_count++;
-            this.project.vote = true;
-          }
+          this.alert = this.toast.showAlert(result.danger)
+        } else if (result.warning) {
+          this.alert = this.toast.showAlert(result.warning)
+          this.project.voted++
+          this.project.is_voted = true          
+        } else if (result.success) {
+          this.project.voted++
+          this.project.is_voted = true
+          this.alert = this.toast.showAlert(this.translate.instant('THANKS_BY_VOTE'))
         }
-      }
+     }
     } catch(err) {
-      console.log(err);
-      this.toast.showError(err);
+      console.log(err)
+      if (err.message)
+        this.alert = this.toast.showAlert(err.message)
+      else
+        this.toast.showError(err)
     }
   }  
 }

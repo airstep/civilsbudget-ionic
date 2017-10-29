@@ -19,7 +19,7 @@
           <img [src]="city.logo">
         </div>      
         <div class="header_text" (click)="selectCity()">
-          {{ city.location }} <ion-icon name="md-arrow-dropdown"></ion-icon>
+          {{ city.location | titlecase }} <ion-icon name="md-arrow-dropdown"></ion-icon>
         </div>
       </div>                
     </ion-list-header>     
@@ -30,7 +30,7 @@
         </ion-avatar>
         <h2>{{ p.owner }}</h2>
         <p>{{ p.title }}</p>
-        <p>{{ p.createdAt | amDateFormat: 'DD.MM.YYYY' }}</p>
+        <!--p>{{ p.createdAt | amDateFormat: 'DD.MM.YYYY' }}</p-->
       </ion-item>        
 
       <img [src]="p.picture">
@@ -41,9 +41,9 @@
 
       <ion-row>
         <ion-col>
-          <button ion-button icon-left clear small (click)="like(p)">
-            <ion-icon [name]="p.vote ? 'ios-thumbs-up' : 'ios-thumbs-up-outline'"></ion-icon>
-            <div>{{p.likes_count}} {{'LIKES' | translate}}</div>
+          <button ion-button icon-left clear small (click)="vote(p)">
+            <ion-icon [name]="p.is_voted ? 'ios-thumbs-up' : 'ios-thumbs-up-outline'"></ion-icon>
+            <div>{{p.voted}} {{'VOTED' | translate}}</div>
           </button>
         </ion-col>
         <ion-col>
@@ -75,7 +75,7 @@
 <ion-footer>
   <ion-toolbar color="footer">
     <ion-buttons left>
-      &#9400; 2017 imisto.com.ua
+      &#9400; 2017 <span (click)="selectCity()">{{ city.location | titlecase }}</span>
     </ion-buttons>
     <ion-buttons right>
       <button ion-button (click)="openFB()" clear><ion-icon name="logo-facebook"></ion-icon></button>      

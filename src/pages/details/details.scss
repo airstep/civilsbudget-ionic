@@ -1,10 +1,8 @@
 page-details {
   .list-header {
     padding: 0px !important;      
-
-    .item-inner   {
-      background-color: red;
-      
+    border-style: none;
+    .item-inner   {     
       padding: 0px !important;
       margin: 0px !important;
       .label {
@@ -43,8 +41,9 @@ page-details {
   .header_logo {
     position:absolute;
     z-index: 20; 
-    button {
+    .button {
       font-size: 16pt;
+      min-height: 24pt !important;
       color: #545c95;
     }
   }

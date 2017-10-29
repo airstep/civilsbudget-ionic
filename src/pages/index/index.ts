@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component } from '@angular/core'
+import { IonicPage, NavController } from 'ionic-angular'
 
-import { ToastService } from './../../providers/toast';
+import { ToastService } from './../../providers/toast'
 import { ApiProvider } from '../../providers/api'
-import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { InAppBrowser } from '@ionic-native/in-app-browser'
+
+import { NetworkService } from './../../providers/network';
 
 @IonicPage()
 @Component({
@@ -11,8 +13,9 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
   templateUrl: 'index.html',
   providers: [
     ApiProvider,
+    ToastService,
     InAppBrowser,
-    ToastService
+    NetworkService
   ]
 })
 export class IndexPage {
@@ -20,22 +23,27 @@ export class IndexPage {
   private places
 
   constructor(
-    public navCtrl: NavController, 
-    public navParams: NavParams,
-    private api: ApiProvider
+    private api: ApiProvider,
+    public network: NetworkService,
+    public navCtrl: NavController
   ) {
-    this.places = [];
+    this.places = []
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad IndexPage');
+    console.log('ionViewDidLoad IndexPage')
     this.initPlaces()
   }
 
   async initPlaces() {
-    let result = await this.api.getVotings();
-    this.places = result.votings;
-    console.log(this.places);
+    let result = await this.api.getVotings()
+    this.places = result.votings
+    console.log(this.places)
+  }
+
+  retry() {
+    if (this.network.isOnline())
+      this.initPlaces()
   }
 
   openCity(city) {

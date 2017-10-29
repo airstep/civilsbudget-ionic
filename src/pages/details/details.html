@@ -1,5 +1,5 @@
 <ion-content no-padding fullscreen #detailsContent>
-  <ion-list-header>
+  <ion-list-header no-padding no-lines>
     <div class="placeBack" (click)="back()">
       <ion-icon name="ios-arrow-back"></ion-icon><span>{{'PROJECTS' | translate}}</span>
     </div>
@@ -9,9 +9,9 @@
         <img src='assets/img/gradient.png'>
       </div>
       <div class="header_logo">
-        <button ion-button color="light" [disabled]='project.vote' (click)="like()">
-          <span *ngIf="!project.vote">{{ 'LIKE' | translate }}</span>
-          <span *ngIf="project.vote">{{ 'ALREADY_LIKED' | translate }}</span>
+        <button ion-button color="light" [disabled]='project.is_voted' (click)="vote()">
+          <span *ngIf="!project.is_voted">{{ 'VOTE' | translate }}</span>
+          <span *ngIf="project.is_voted">{{ 'ALREADY_VOTED' | translate }}</span>
         </button>
       </div>      
       <div class="header_text">
@@ -21,12 +21,12 @@
     <table *ngIf="project">
       <tr>
         <td class="leftStat">
-          <p>{{'LIKED' | translate}}</p>
-          <div class="info">{{project.likes_count}}</div>    
+          <p>{{'VOTED' | translate}}</p>
+          <div class="info">{{project.voted}}</div>    
         </td>
         <td class="rightStat">
           <p>{{'END_DATE' | translate}}</p>
-          <div class="info">14.11.2017</div>          
+          <div class="info">{{ city.date_to | amDateFormat: 'DD.MM.YYYY' }}</div>          
         </td>
       </tr>
     </table>          
@@ -48,7 +48,7 @@
 <ion-footer>
   <ion-toolbar color="footer">
     <ion-buttons left>
-      &#9400; 2017 imisto.com.ua
+      &#9400; 2017 {{ city.location | titlecase }}
     </ion-buttons>
     <ion-buttons right>
         <button ion-button (click)="openFB()" clear><ion-icon name="logo-facebook"></ion-icon></button>      

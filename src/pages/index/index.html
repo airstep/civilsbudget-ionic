@@ -1,12 +1,25 @@
 <ion-content>
-  <ion-list>   
+  <ion-list *ngIf="network.isOnline()">   
     <ion-card *ngFor="let p of places" (click)="openCity(p)">
       <img [src]="p.background_image" *ngIf="p.background_image" id="bg">
       <div class="card-logo" *ngIf="p.logo"><img [src]="p.logo" id="logo"></div>
       <div class="card-location">{{ p.location }}</div>
       <div class="card-title">{{ p.title }}</div>
-      <div class="card-subtitle">{{p.voted}} {{'LIKES' | translate}}</div>
+      <div class="card-subtitle">{{p.voted}} {{'VOTED' | translate}}</div>
       <div class="card-date-range">{{ p.date_from | amDateFormat: 'DD.MM.YYYY' }} - {{ p.date_to | amDateFormat: 'DD.MM.YYYY' }}</div>
     </ion-card>    
   </ion-list>  
+  <ion-list padding no-lines *ngIf="network.isOffline()" class="transparent">
+    <ion-item text-center class="transparent">
+      <img src='assets/svg/no_connection.svg' class="noConnectionImage"/>    
+    </ion-item>
+    <ion-item text-center text-wrap class="transparent">
+      <span>
+        <div [innerHTML]="'CONN_PROBLEM_OFFLINE' | translate"></div>
+      </span>
+    </ion-item>
+    <ion-item text-center>
+      <button ion-button large (click)="retry()" color="connection">{{'RETRY' | translate}}</button>
+    </ion-item>
+  </ion-list>    
 </ion-content>
