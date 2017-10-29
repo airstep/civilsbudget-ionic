@@ -72,7 +72,7 @@
     
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="isFooterVisible">
   <ion-toolbar color="footer">
     <ion-buttons left>
       &copy; 2017 <span (click)="selectCity()">{{ city.location | titlecase }}</span>

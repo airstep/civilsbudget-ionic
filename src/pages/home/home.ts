@@ -1,7 +1,7 @@
 import { ToastService } from './../../providers/toast'
 import { TranslateService } from '@ngx-translate/core'
-import { Component } from '@angular/core'
-import { NavController, IonicPage, Alert, NavParams } from 'ionic-angular'
+import { Component, ViewChild, NgZone } from '@angular/core'
+import { NavController, IonicPage, Alert, NavParams, Content } from 'ionic-angular'
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser'
 import { Storage } from '@ionic/storage'
 
@@ -11,7 +11,7 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/timeout'
 import { NetworkService } from '../../providers/network';
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
-import { Events } from 'ionic-angular';
+import { Events, ScrollEvent } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -26,6 +26,9 @@ import { Events } from 'ionic-angular';
   ]
 })
 export class HomePage {
+  
+  @ViewChild(Content) content: Content;
+
   private DEFAULT_PROJECT_COUNT = 5
 
   private projects
@@ -33,6 +36,7 @@ export class HomePage {
   
   private isLoading: boolean
   private isLoadingOnPull: boolean
+  private isFooterVisible: boolean
   
   private alert: Alert
   private city
@@ -45,6 +49,7 @@ export class HomePage {
     public toast: ToastService,
     public events: Events,
     public network: NetworkService,
+    public zone: NgZone,
     private firebaseAnalytics: FirebaseAnalytics,
     private iab: InAppBrowser
   ) {
@@ -52,6 +57,7 @@ export class HomePage {
     this.allProjects = []
     this.isLoading = false
     this.isLoadingOnPull = false
+    this.isFooterVisible = true
     this.city = this.navParams.get('city')
   }
 
@@ -67,6 +73,16 @@ export class HomePage {
     this.events.subscribe('refresh', () => {
       this.refresh();
     });
+
+    this.content.ionScrollEnd.subscribe(this.toggleFooter.bind(this))
+  }
+
+  toggleFooter(e: ScrollEvent) {
+    if (e.directionY) {
+      this.zone.run(() =>{
+        this.isFooterVisible = (e.directionY === "up")
+      })
+    }
   }
 
   async pullRefresh(event) {

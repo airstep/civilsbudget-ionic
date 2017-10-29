@@ -37,8 +37,7 @@ export class DetailsPage {
     public toast: ToastService,
     private firebaseAnalytics: FirebaseAnalytics,
     public events: Events,
-    public network: NetworkService,
-    private iab: InAppBrowser    
+    public network: NetworkService
   ) {
     this.project = this.navParams.get('project')    
     this.city = this.navParams.get('city')    
