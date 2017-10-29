@@ -10,6 +10,8 @@ import { ApiProvider } from '../../providers/api'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/timeout'
 import { NetworkService } from '../../providers/network';
+import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
+import { Events } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -19,7 +21,8 @@ import { NetworkService } from '../../providers/network';
     ApiProvider,
     InAppBrowser,
     ToastService,
-    NetworkService
+    NetworkService,
+    FirebaseAnalytics
   ]
 })
 export class HomePage {
@@ -41,8 +44,10 @@ export class HomePage {
     public api: ApiProvider,
     public translate: TranslateService,
     public toast: ToastService,
+    public events: Events,
     public network: NetworkService,
     public loadingCtrl: LoadingController,
+    private firebaseAnalytics: FirebaseAnalytics,
     private iab: InAppBrowser
   ) {
     this.projects = []
@@ -54,6 +59,16 @@ export class HomePage {
 
   ngAfterViewInit() {
     this.refresh()
+    this.initEvents()
+    this.firebaseAnalytics.logEvent('page_view', {page: "projects"})
+      .then((res: any) => console.log(res))
+      .catch((error: any) => console.error(error));    
+  }
+
+  initEvents() {
+    this.events.subscribe('refresh', () => {
+      this.refresh();
+    });
   }
 
   async pullRefresh(event) {
@@ -131,6 +146,10 @@ export class HomePage {
         return
       }        
       
+      this.firebaseAnalytics.logEvent('vote', {page: "projects", status: 'try', projectId: project.id, cityId: this.city.id})
+        .then((res: any) => console.log(res))
+        .catch((error: any) => console.error(error));
+
       isWasAuth = await this.api.isAuthorized()
 
       let result = await this.api.voteProject(this.city.id, project.id)
@@ -143,6 +162,9 @@ export class HomePage {
           project.voted++
           project.is_voted = true
           this.alert = this.toast.showAlert(this.translate.instant('THANKS_BY_VOTE'))
+          this.firebaseAnalytics.logEvent('voted', {page: "projects", status: 'success', projectId: project.id, cityId: this.city.id})
+            .then((res: any) => console.log(res))
+            .catch((error: any) => console.error(error));            
         }
       }
     } catch(err) {

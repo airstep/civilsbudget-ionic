@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "165033486539",
+    "firebase_url": "https://civilsbudget.firebaseio.com",
+    "project_id": "civilsbudget",
+    "storage_bucket": "civilsbudget.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165033486539:android:dc23ab3d9bf22bfa",
+        "android_client_info": {
+          "package_name": "org.tgs.civils.budget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165033486539-1jd6ofvhm16t5t7g375h3or5qi3mj7r6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.tgs.civils.budget",
+            "certificate_hash": "893a278b669d5aa9c696eeb48f546591a7a6b93e"
+          }
+        },
+        {
+          "client_id": "165033486539-g6q9bce1qpo7ui9363cllj3s1t3e4r6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5e0TUWGz61WEtYAer3vEg2ZZ6bcEVHM0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165033486539-g6q9bce1qpo7ui9363cllj3s1t3e4r6i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
