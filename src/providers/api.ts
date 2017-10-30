@@ -20,13 +20,13 @@ export class ApiProvider {
   private baseDataURL = "https://bankid.privatbank.ua/ResourceService"
 
   // REAL URL's
-  //private baseURL = "https://vote.imisto.com.ua/api"
-  //public codeURL = "https://vote.imisto.com.ua/api/login?code="
+  private baseURL = "https://vote.imisto.com.ua/api"
+  public codeURL = "https://vote.imisto.com.ua/api/login?code="
   // UNCOMMENT
 
   // !!! FOR TEST ONLY !!!
-  private baseURL = "https://test.vote.imisto.com.ua/api"
-  public codeURL = "https://test.vote.imisto.com.ua/api/login?code="
+  //private baseURL = "https://test.vote.imisto.com.ua/api"
+  //public codeURL = "https://test.vote.imisto.com.ua/api/login?code="
   // !!! COMMENT THIS AFTER TEST END !!!
 
   public code = ""

@@ -16,27 +16,27 @@
           <img src='assets/img/gradient.png'>
         </div>
         <div class="header_logo" *ngIf="city.logo">
-          <img [src]="city.logo">
+          <img [src]="city.logo" class="center">
         </div>      
         <div class="header_text" (click)="selectCity()">
-          {{ city.location | titlecase }} <ion-icon name="md-arrow-dropdown"></ion-icon>
+          {{ city.title }}
         </div>
       </div>                
     </ion-list-header>     
     <ion-card *ngFor="let p of projects">
       <ion-item>
-        <ion-avatar item-start *ngIf="p.avatar_owner">
-          <img [src]="p.avatar_owner">
+        <ion-avatar item-start *ngIf="p.owner_avatar">
+          <img [src]="p.owner_avatar">
         </ion-avatar>
-        <h2>{{ p.owner }}</h2>
-        <p>{{ p.title }}</p>
+        <h2>{{ p.title }}</h2>
+        <p>{{ p.owner }}</p>
         <!--p>{{ p.createdAt | amDateFormat: 'DD.MM.YYYY' }}</p-->
       </ion-item>        
 
-      <img [src]="p.picture">
+      <img [src]="p.picture" *ngIf="p.picture">
 
       <ion-card-content>
-        <p>{{ p.description }}
+        <p>{{ p.description }}</p>
       </ion-card-content>
 
       <ion-row>
