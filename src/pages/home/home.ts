@@ -166,7 +166,7 @@ export class HomePage {
         } else if (result.success) {
           project.voted++
           project.is_voted = true
-          this.alert = this.toast.showAlert(this.translate.instant('THANKS_BY_VOTE'))
+          this.alert = this.toast.showAlert(result.success)
           this.firebaseAnalytics.logEvent('voted', {page: "projects", status: 'success', projectId: project.id, cityId: this.city.id})
             .then((res: any) => console.log(res))
             .catch((error: any) => console.error(error));            

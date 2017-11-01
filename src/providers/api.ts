@@ -62,11 +62,26 @@ export class ApiProvider {
     try {
       await this.platform.ready()
       let result = await this.storage.get('user')
-      if (result && this.isJsonString(result))
-        this.user = JSON.parse(result)
+      if (result && this.isJsonString(result)) {
+        let savedUser = JSON.parse(result)
+        if (this.checkUserTime(savedUser))
+          this.user = savedUser;
+      }
     } catch (err) {
       console.log(err)
     }
+  }
+
+  private checkUserTime(user) {
+    if (user.savedAt) {
+      var diffOneHour = 60 * 60 * 1000;
+      var currentDate = new Date().getTime();
+      var userDate = Date.parse(user.savedAt)
+      var result = ((currentDate - userDate) < diffOneHour)
+      console.log("check if user time go away: " + result)
+      return result
+    }
+    return false    
   }
 
   public async initSettings() {
@@ -102,8 +117,10 @@ export class ApiProvider {
 
   public async civilAuth() {
     this.user = await this.get("/authorization?code=" + this.bankIdAuth.access_token)
-    if (this.user && this.storage)
+    if (this.user && this.storage) {
+      this.user.savedAt = new Date();
       this.storage.set('user', JSON.stringify(this.user))
+    }
   }
 
   public async getProject(votingId, id) {

@@ -89,7 +89,7 @@ export class DetailsPage {
         } else if (result.success) {
           this.project.voted++
           this.project.is_voted = true
-          this.alert = this.toast.showAlert(this.translate.instant('THANKS_BY_VOTE'))
+          this.alert = this.toast.showAlert(result.success)
           this.firebaseAnalytics.logEvent('voted', {page: "details", status: 'success', projectId: this.project.id, cityId: this.city.id})
             .then((res: any) => console.log(res))
             .catch((error: any) => console.error(error));            
@@ -101,7 +101,6 @@ export class DetailsPage {
         this.alert = this.toast.showAlert(err.danger)    
       else if (err.warning) {
         this.alert = this.toast.showAlert(err.warning)
-        this.project.is_voted = true
         if (!isWasAuth && this.api.isAuthorized()) 
           this.sendRefreshEvent()    
       } else {
