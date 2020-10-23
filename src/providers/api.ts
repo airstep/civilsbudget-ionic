@@ -17,11 +17,11 @@ import 'rxjs/add/operator/timeout'
 @Injectable()
 export class ApiProvider {
   public baseAuthURL = "https://bankid.privatbank.ua/DataAccessService"
-  private baseDataURL = "https://bankid.privatbank.ua/ResourceService"
+  // private baseDataURL = "https://bankid.privatbank.ua/ResourceService"
 
   // REAL URL's
-  private baseURL = "https://vote.imisto.com.ua/api"
-  public codeURL = "https://vote.imisto.com.ua/api/login?code="
+  private baseURL = "https://golos.hromada.live/api"
+  public codeURL = `${this.baseURL}/login?code=`
   // UNCOMMENT
 
   // !!! FOR TEST ONLY !!!
