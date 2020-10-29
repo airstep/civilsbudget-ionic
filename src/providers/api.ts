@@ -45,8 +45,11 @@ export class ApiProvider {
     enableViewportScale: 'yes',
     toolbar: 'no',
     zoom: 'no',
-    presentationstyle: 'pagesheet'
-  }
+    presentationstyle: 'fullscreen',
+    clearsessioncache: 'yes',
+    clearcache: 'yes',
+    footer: 'yes' // set to yes to show a close button in the footer similar to the iOS Done button.
+  };
 
   constructor(
     public http: Http,
@@ -237,12 +240,18 @@ export class ApiProvider {
 
     let baseAuthURL = this.getBaseAuthURL()
 
+    this.options.closebuttoncaption = 'Зачинити';
+    this.options.toolbarposition = 'bottom';
+    this.options.toolbar = 'yes';
+    this.options.clearcache = 'yes';
+    this.options.clearsessioncache = 'yes';
+    this.options.fullscreen = 'yes';
     return new Promise((resolve, reject) => {
-      let browser: InAppBrowserObject = this.iab.create(
+      const browser: InAppBrowserObject = this.iab.create(
         baseAuthURL,
-        "_self",
+        '_blank',
         this.options
-      )
+      );
 
       browser.on("loadstart").subscribe(event => {
         console.log(event)
@@ -267,7 +276,8 @@ export class ApiProvider {
       })
 
       browser.on("loadstop").subscribe(event => {
-        console.log(event)
+        console.log('on loadstop')
+        console.dir(event)
         if (event.url.startsWith(this.codeURL)) {
           browser.executeScript({ code: "document.body.innerText" })
             .then(result => {
