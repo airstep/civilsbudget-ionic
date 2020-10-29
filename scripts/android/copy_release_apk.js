@@ -10,7 +10,7 @@ function loadConfigXMLDoc(filePath) {
     var xml2js = require('xml2js');
     var json = "";
     try {
-        var fileData = fs.readFileSync(filePath, 'ascii');
+        var fileData = fs.readFileSync(filePath, 'utf-8');
         var parser = new xml2js.Parser();
         parser.parseString(fileData.substring(0, fileData.length), function (err, result) {
           if (err)

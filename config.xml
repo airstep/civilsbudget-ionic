@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="org.tgs.civils.budget" version="1.1.5" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Civils Budget</name>
+    <name>Громадський бюджет</name>
     <description>An awesome app from Ukraine.</description>
     <author email="back.neomind@gmail.com" href="http://tgsoft.in/">TGSoft</author>
     <content src="index.html" />
