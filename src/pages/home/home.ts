@@ -1,9 +1,8 @@
 import { ToastService } from './../../providers/toast'
 import { TranslateService } from '@ngx-translate/core'
-import { Component, ViewChild, NgZone } from '@angular/core'
+import { Component, ViewChild, NgZone, OnDestroy } from '@angular/core'
 import { NavController, IonicPage, Alert, NavParams, Content } from 'ionic-angular'
-import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser'
-import { Storage } from '@ionic/storage'
+import { InAppBrowser } from '@ionic-native/in-app-browser'
 
 import { ApiProvider } from '../../providers/api'
 
@@ -12,6 +11,7 @@ import 'rxjs/add/operator/timeout'
 import { NetworkService } from '../../providers/network';
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
 import { Events, ScrollEvent } from 'ionic-angular';
+import { Subscription } from 'rxjs'
 
 @IonicPage()
 @Component({
@@ -25,7 +25,7 @@ import { Events, ScrollEvent } from 'ionic-angular';
     FirebaseAnalytics
   ]
 })
-export class HomePage {
+export class HomePage implements OnDestroy {
   
   @ViewChild(Content) content: Content;
 
@@ -34,6 +34,7 @@ export class HomePage {
   private projects
   private allProjects
   
+  private isAuth: boolean
   private isLoading: boolean
   private isLoadingOnPull: boolean
   private isFooterVisible: boolean
@@ -41,6 +42,8 @@ export class HomePage {
   private alert: Alert
   private city
 
+  authCheckSub: Subscription
+  
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -50,8 +53,7 @@ export class HomePage {
     public events: Events,
     public network: NetworkService,
     public zone: NgZone,
-    private firebaseAnalytics: FirebaseAnalytics,
-    private iab: InAppBrowser
+    private firebaseAnalytics: FirebaseAnalytics
   ) {
     this.projects = []
     this.allProjects = []
@@ -62,8 +64,8 @@ export class HomePage {
   }
 
   ngAfterViewInit() {
-    this.refresh()
     this.initEvents()
+    this.refresh()
     this.firebaseAnalytics.logEvent('page_view', {page: "projects"})
       .then((res: any) => console.log(res))
       .catch((error: any) => console.error(error));    
@@ -74,7 +76,21 @@ export class HomePage {
       this.refresh();
     });
 
+    this.authCheckSub = this.api.authCheck.subscribe((user) => {
+      this.isAuth = user ? true : false
+      console.log('on check:auth', this.isAuth)
+    });
+
+    this.api.isAuthorized();
+
     this.content.ionScrollEnd.subscribe(this.toggleFooter.bind(this))
+  }
+
+  ngOnDestroy() {
+    this.events.unsubscribe('refresh')
+    if (this.authCheckSub) {
+      this.authCheckSub.unsubscribe()
+    }
   }
 
   toggleFooter(e: ScrollEvent) {
@@ -95,12 +111,27 @@ export class HomePage {
     }
   }
 
+  logout() {
+    this.toast.showConfirmAlert("Ви бажаєте вийти?", () => {
+      this.api.logout()
+      this.selectCity()
+    })
+  }
+
+  info() {
+    if (this.api.user['full_name']) {
+      this.toast.showAlert(`Ви зайшли як: ${this.api.user.full_name}`)
+    }
+  }
+
   async refresh() {
     try {
       this.isLoading = true
       let json = await this.api.getProjects(this.city.id)
       console.log(json)
       this.allProjects = json.projects
+      
+      this.api.isAuthorized();
       
       this.projects = []
       for (let i = 0; i < this.DEFAULT_PROJECT_COUNT; i++) {
@@ -156,32 +187,39 @@ export class HomePage {
         .catch((error: any) => console.error(error));
 
       isWasAuth = await this.api.isAuthorized()
-
-      let result = await this.api.voteProject(this.city.id, project.id)
-      if (result) {
-        if (result.danger) {
-          this.alert = this.toast.showAlert(result.danger)
-        } else if (result.warning) {
-          this.alert = this.toast.showAlert(result.warning)
-        } else if (result.success) {
-          project.voted++
-          project.is_voted = true
-          this.alert = this.toast.showAlert(result.success)
-          this.firebaseAnalytics.logEvent('voted', {page: "projects", status: 'success', projectId: project.id, cityId: this.city.id})
-            .then((res: any) => console.log(res))
-            .catch((error: any) => console.error(error));            
+      
+      if (isWasAuth) {
+        let result = await this.api.voteProject(this.city.id, project.id)
+        if (result) {
+          if (result.danger) {
+            this.alert = this.toast.showAlert(result.danger)
+          } else if (result.warning) {
+            this.alert = this.toast.showAlert(result.warning)
+          } else if (result.success) {
+            project.voted++
+            project.is_voted = true
+            this.alert = this.toast.showAlert(result.success)
+            this.firebaseAnalytics.logEvent('voted', {page: "projects", status: 'success', projectId: project.id, cityId: this.city.id})
+              .then((res: any) => console.log(res))
+              .catch((error: any) => console.error(error));            
+          }
         }
+      } else {
+        await this.api.checkAuth()
       }
     } catch(err) {
-      console.log(err)
+      console.log('error on vote')
+      console.dir(err)
       if (err.danger)
         this.alert = this.toast.showAlert(err.danger)    
       else if (err.warning) {
         this.alert = this.toast.showAlert(err.warning)
-        if (!isWasAuth && this.api.isAuthorized()) 
+        if (!isWasAuth && await this.api.isAuthorized()) {
           this.refresh()
-      } else
-        this.toast.showError(JSON.stringify(err))
+        }
+      } else {
+        this.toast.showError(JSON.parse(err))
+      }
     }
   }
 

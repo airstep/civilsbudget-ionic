@@ -21,6 +21,12 @@
         <div class="header_text" (click)="selectCity()">
           {{ city.title }}
         </div>
+        <div *ngIf="isAuth" class="logout_place" (click)="logout()">
+          <ion-icon name="exit-outline" color="light"></ion-icon>
+        </div>
+        <div *ngIf="isAuth" class="user_place" (click)="info()">
+          <ion-icon name="ios-contact" color="light"></ion-icon>
+        </div>
       </div>                
     </ion-list-header>     
     <ion-card *ngFor="let p of projects">
@@ -55,7 +61,7 @@
     </ion-card>    
   </ion-list>
 
-  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" enabled="true">
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" threshold="70" enabled="true">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="{{ 'LOADING_MORE_DATA' | translate }}">

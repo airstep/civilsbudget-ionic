@@ -1,17 +1,19 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.tgs.civils.budget" version="1.1.5" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.tgs.civils.budget" version="1.1.6" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Громадський бюджет</name>
     <description>An awesome app from Ukraine.</description>
     <author email="back.neomind@gmail.com" href="http://tgsoft.in/">TGSoft</author>
     <content src="index.html" />
     <access origin="*" />
-    <allow-navigation href="https://vote.imisto.com.ua/*" />
+    <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <allow-intent href="*" />
+    <preference name="AllowedSchemes" value="privat24,app,ua.org.concord,ua.org.bankid.digsid" />
     <preference name="orientation" value="portrait" />
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import { IonicPage, NavController, NavParams, Alert } from 'ionic-angular'
-import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser'
+import { InAppBrowser } from '@ionic-native/in-app-browser'
 
 import { ApiProvider } from '../../providers/api'
 import { ToastService } from './../../providers/toast'
@@ -49,7 +49,7 @@ export class DetailsPage {
   ngAfterViewInit() {
     this.firebaseAnalytics.logEvent('page_view', {page: "project_details"})
       .then((res: any) => console.log(res))
-      .catch((error: any) => console.error(error));    
+      .catch((error: any) => console.error(error));
   }
 
   openFB() {
@@ -78,23 +78,28 @@ export class DetailsPage {
       
       isWasAuth = await this.api.isAuthorized()
 
-      let result = await this.api.voteProject(this.city.id, this.project.id)
-      if (result) {
-        if (result.danger) {
-          this.alert = this.toast.showAlert(result.danger)
-        } else if (result.warning) {
-          this.alert = this.toast.showAlert(result.warning)
-          this.project.voted++
-          this.project.is_voted = true          
-        } else if (result.success) {
-          this.project.voted++
-          this.project.is_voted = true
-          this.alert = this.toast.showAlert(result.success)
-          this.firebaseAnalytics.logEvent('voted', {page: "details", status: 'success', projectId: this.project.id, cityId: this.city.id})
-            .then((res: any) => console.log(res))
-            .catch((error: any) => console.error(error));            
+      if (isWasAuth) {
+        let result = await this.api.voteProject(this.city.id, this.project.id)
+        if (result) {
+          if (result.danger) {
+            this.alert = this.toast.showAlert(result.danger)
+          } else if (result.warning) {
+            this.alert = this.toast.showAlert(result.warning)
+            this.project.voted++
+            this.project.is_voted = true          
+          } else if (result.success) {
+            this.project.voted++
+            this.project.is_voted = true
+            this.alert = this.toast.showAlert(result.success)
+            this.firebaseAnalytics.logEvent('voted', {page: "details", status: 'success', projectId: this.project.id, cityId: this.city.id})
+              .then((res: any) => console.log(res))
+              .catch((error: any) => console.error(error));            
+          }
         }
-     }
+      } else {
+        this.initEvents()
+        await this.api.checkAuth()
+      }
     } catch(err) {
       console.log(err)
       if (err.danger)
@@ -108,6 +113,16 @@ export class DetailsPage {
       }
     }
   }  
+
+  initEvents() {
+    const authCheckSub = this.api.authCheck.subscribe((user) => {
+      if (user) {
+        this.sendRefreshEvent()
+      }
+      if (authCheckSub)
+        authCheckSub.unsubscribe()
+    });
+  }
 
   sendRefreshEvent() {
     this.events.publish('refresh');

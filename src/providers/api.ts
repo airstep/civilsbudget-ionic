@@ -2,9 +2,8 @@ import { Platform } from 'ionic-angular'
 import { TranslateService } from '@ngx-translate/core'
 import { ToastService } from './toast'
 import { Injectable } from '@angular/core'
-import { Http, Response, RequestOptions, Headers } from '@angular/http'
+import { Http, Response, RequestOptions, Headers, ResponseContentType } from '@angular/http'
 import { InAppBrowser, InAppBrowserObject, InAppBrowserOptions } from '@ionic-native/in-app-browser'
-import { Storage } from '@ionic/storage'
 
 import { Observable } from 'rxjs/Observable'
 
@@ -13,6 +12,7 @@ import 'rxjs/add/observable/throw'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/toPromise'
 import 'rxjs/add/operator/timeout'
+import { Subject } from 'rxjs'
 
 @Injectable()
 export class ApiProvider {
@@ -29,14 +29,15 @@ export class ApiProvider {
   //public codeURL = "https://test.vote.imisto.com.ua/api/login?code="
   // !!! COMMENT THIS AFTER TEST END !!!
 
-  public code = ""
+  // public code = ""
 
   public user: any
   public bankIdAuth: any
 
-  private timeoutMS = 20000
+  private timeoutMS = 40000
 
   private settings
+  public authCheck: Subject<any> = new Subject();
 
   private options: InAppBrowserOptions = {
     location: 'no', // addressbar
@@ -56,19 +57,21 @@ export class ApiProvider {
     private iab: InAppBrowser,
     private translate: TranslateService,
     private platform: Platform,
-    private storage: Storage,
     private toast: ToastService
   ) {
   }
 
   async initUserFromSettings() {
+    console.log('initUserFromSettings')
     try {
       await this.platform.ready()
-      let result = await this.storage.get('user')
+      let result = localStorage.getItem('user')
       if (result && this.isJsonString(result)) {
         let savedUser = JSON.parse(result)
-        if (this.checkUserTime(savedUser))
+        if (this.checkUserTime(savedUser)) {
           this.user = savedUser;
+          this.authCheck.next(this.user)
+        }
       }
     } catch (err) {
       console.log(err)
@@ -99,12 +102,22 @@ export class ApiProvider {
     return this.get("/votings/"+ votingId + "/projects")
   }
 
+  public async logout() {
+    // this.code = ""
+    this.bankIdAuth = undefined
+    this.user = undefined
+    localStorage.clear()
+    this.authCheck.next(this.user)
+  }
+
   public async isAuthorized(): Promise<boolean> {
     if (this.user) {
+      this.authCheck.next(this.user)
       return true
     } else {
       await this.initUserFromSettings()
     }
+    console.log('isAuthorized', this.user !== undefined)
     return this.user !== undefined
   }
 
@@ -119,11 +132,27 @@ export class ApiProvider {
   }
 
   public async civilAuth() {
-    this.user = await this.get("/authorization?code=" + this.bankIdAuth.access_token)
-    if (this.user && this.storage) {
-      this.user.savedAt = new Date();
-      this.storage.set('user', JSON.stringify(this.user))
+    console.log('civilAuth') 
+    try {
+      if (this.bankIdAuth) {
+        console.log('civilAuth1') 
+        this.user = await this.get("/authorization?code=" + this.bankIdAuth.access_token)
+        console.log('user', JSON.stringify(this.user))
+        if (this.user) {
+          console.log('civilAuth2') 
+          this.user.savedAt = new Date();
+          localStorage.setItem('user', JSON.stringify(this.user))
+          console.log('civilAuth3') 
+          this.authCheck.next(this.user)
+        }
+        console.log('civilAuth4') 
+        return true
+      }
+    } catch (err) {
+      console.log('civilAuth err')
+      console.dir(err)
     }
+    return false
   }
 
   public async getProject(votingId, id) {
@@ -139,12 +168,11 @@ export class ApiProvider {
   public async checkAuth() {
     let authState: boolean = await this.isAuthorized()
     if (!authState) {
-      if (!this.code) {
-        let result = await this.bankIdLogin()
-        if (!result) return // skip cancel
-      }
-      await this.civilAuth()
+      return await this.bankIdLogin()
+      // if (this.bankIdAuth && this.bankIdAuth.access_token)
+      //   await this.civilAuth()
     }
+    return false;
   }
 
   public async voteProject(cityId, projectId) {
@@ -176,7 +204,8 @@ export class ApiProvider {
   }
 
   public async get(path) {
-    return this.http.get(this.baseURL + path)
+    console.log(this.baseURL + path)
+    return this.http.get(this.baseURL + path, {responseType: ResponseContentType.Json})
     .timeout(this.timeoutMS)
     .map(res => {
       console.log(res)
@@ -201,9 +230,9 @@ export class ApiProvider {
       "&redirect_uri=" + this.settings.bi_redirect_uri
   }
 
-  setCode(url) {
-    this.code = url.substr(url.lastIndexOf("=") + 1, url.length)
-  }
+  // setCode(url) {
+  //   this.code = url.substr(url.lastIndexOf("=") + 1, url.length)
+  // }
 
   catchError(error: Response | any){
     let errMsg: string
@@ -236,6 +265,8 @@ export class ApiProvider {
 
   // Auth
   async bankIdLogin() {
+    await this.platform.ready()
+    
     await this.initSettings()
 
     let baseAuthURL = this.getBaseAuthURL()
@@ -253,18 +284,20 @@ export class ApiProvider {
         this.options
       );
 
-      browser.on("loadstart").subscribe(event => {
-        console.log(event)
-        if ((event.url).indexOf('login?code=') != -1) {
-          this.setCode(event.url)
-          browser.hide()
-        }
-      })
+      // browser.on("loadstart").subscribe(event => {
+      //   console.log(event)
+      //   if ((event.url).indexOf('login?code=') != -1) {
+      //     this.setCode(event.url)
+      //     browser.hide()
+      //   }
+      // })
 
       browser.on("exit").subscribe(event => {
         console.log(event)
+        console.log('exit', JSON.stringify(this.bankIdAuth))
         if (this.bankIdAuth) {
-          resolve(true)
+          this.civilAuth().then(() => resolve(true))
+            .catch(err => reject(false))
         } else {
           resolve(false)
         }
@@ -274,6 +307,31 @@ export class ApiProvider {
         console.log(event)
         reject(event)
       })
+
+      browser.on('customscheme').subscribe(event => {
+        //do whatever you want here like:
+        console.log('customscheme')
+        let ref = window.open(event.url, "_system");
+        ref.addEventListener('loadstop', (event: any) => {
+          console.log('window on loadstop')
+          console.dir(event)
+          if (event.url.startsWith(this.codeURL)) {
+            browser.executeScript({ code: "document.body.innerText" })
+              .then(result => {
+                  console.log(result)
+                  if (result.length > 0) {
+                    this.bankIdAuth = JSON.parse(result[0])
+                    browser.close()
+                  }
+              })
+              .catch(err => {
+                browser.close()
+                console.log(err)
+                reject(err)
+              })
+          }
+        })
+      });
 
       browser.on("loadstop").subscribe(event => {
         console.log('on loadstop')
@@ -292,12 +350,6 @@ export class ApiProvider {
               console.log(err)
               reject(err)
             })
-        } else if (event.url.indexOf("DataAccessService") !== -1) {
-          this.getTransformCSS()
-            .then(css => {
-              browser.insertCSS({ code: css })
-            })
-            .catch(err => console.log(err))
         }
       })
 
@@ -308,7 +360,7 @@ export class ApiProvider {
   openFacebookPage() {
     let browser: InAppBrowserObject = this.iab.create(
       this.translate.instant('FB_URL'),
-      "_self",
+      "_system",
       this.getBrowserOptions()
     )
     browser.show()

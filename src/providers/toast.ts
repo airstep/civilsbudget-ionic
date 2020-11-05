@@ -80,4 +80,23 @@ export class ToastService {
 
     return this.alert;
   }  
+
+  showConfirmAlert(message, cb) {
+    this.alert = this.alertCtrl.create({
+      message: message,
+      buttons: [
+        {
+          text: 'Нi',
+          handler: () => {
+            this.dismiss()
+          }
+        },
+        {
+          text: 'Так',
+          handler: cb
+        }
+      ]
+    })
+    this.alert.present();
+  }
 }

@@ -55,7 +55,31 @@ page-home {
       width: 80pt;    
       align-self: center;
       z-index: 26 !important;   
-    }    
+    }
+  }
+
+  .logout_place {
+    position:absolute;
+    top: 0;
+    right: 0;
+    margin-top: .6em;
+    margin-right: 1.6em;
+    z-index: 27 !important;
+    ion-icon {
+      font-size: 3em;
+    }
+  }
+
+  .user_place {
+    position:absolute;
+    top: 0;
+    left: 0;
+    margin-top: .6em;
+    margin-left: 1.6em;
+    z-index: 27 !important;
+    ion-icon {
+      font-size: 3em;
+    }
   }
 
   .header_text {
