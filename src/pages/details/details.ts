@@ -117,7 +117,7 @@ export class DetailsPage {
   initEvents() {
     const authCheckSub = this.api.authCheck.subscribe((user) => {
       if (user) {
-        this.sendRefreshEvent()
+        this.sendSuccessAuthEvent()
       }
       if (authCheckSub)
         authCheckSub.unsubscribe()
@@ -126,5 +126,9 @@ export class DetailsPage {
 
   sendRefreshEvent() {
     this.events.publish('refresh');
+  }
+
+  sendSuccessAuthEvent() {
+    this.events.publish('auth:success');
   }
 }

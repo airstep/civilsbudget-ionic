@@ -76,6 +76,10 @@ export class HomePage implements OnDestroy {
       this.refresh();
     });
 
+    this.events.subscribe('auth:success', () => {
+      this.isAuth = true
+    });
+
     this.authCheckSub = this.api.authCheck.subscribe((user) => {
       this.isAuth = user ? true : false
       console.log('on check:auth', this.isAuth)
@@ -88,6 +92,7 @@ export class HomePage implements OnDestroy {
 
   ngOnDestroy() {
     this.events.unsubscribe('refresh')
+    this.events.unsubscribe('auth:success')
     if (this.authCheckSub) {
       this.authCheckSub.unsubscribe()
     }
