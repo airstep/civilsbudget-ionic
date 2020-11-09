@@ -18,5 +18,9 @@ $ ionic cordova run ios
 
 Substitute ios for android if not on a Mac.
 
+## Before Build (historical)
+For Android change in config.xml app id to: org.tgs.civils.budget
+For iOS change in config.xml app id to: com.maxodnovolyk.Civilbudget
+
 # Notes
 Please keep in mind that this project violates [KISS](https://en.wikipedia.org/wiki/KISS_principle) principle.
