@@ -1,0 +1,18 @@
+{
+    "android": {
+        "debug": {
+            "keystore": "./release.keystore",
+             "storePassword": "ahsh7Zie",
+             "alias": "tgs",
+             "password" : "ahsh7Zie",
+             "keystoreType": ""
+        },
+        "release": {
+           "keystore": "./release.keystore",
+            "storePassword": "ahsh7Zie",
+            "alias": "tgs",
+            "password" : "ahsh7Zie",
+            "keystoreType": ""
+        }
+    }
+}

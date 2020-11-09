@@ -1,6 +1,6 @@
 {
     "name": "civils-budget",
-    "version": "1.1.9",
+    "version": "1.2.0",
     "author": "Shevchenko Taras <back.neomind@gmail.com>",
     "homepage": "http://tgsoft.in/",
     "private": false,
@@ -71,8 +71,8 @@
             "cordova-plugin-inappbrowser": {}
         },
         "platforms": [
-            "android",
-            "ios"
+            "ios",
+            "android"
         ]
     }
 }
