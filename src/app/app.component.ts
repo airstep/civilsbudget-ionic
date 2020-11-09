@@ -19,12 +19,9 @@ export class MyApp {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       if (platform.is('ios')) {
-        const themeMode = window.matchMedia('(prefers-color-scheme: dark)');
-        if (themeMode.matches) {
-          statusBar.overlaysWebView(false);
-          statusBar.backgroundColorByHexString('#545c95');
-        }
-        statusBar.styleDefault();
+        statusBar.overlaysWebView(false);
+        statusBar.backgroundColorByHexString('#545c95');
+        // statusBar.styleDefault();
       }
       splashScreen.hide();
     });
