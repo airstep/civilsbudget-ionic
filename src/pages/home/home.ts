@@ -29,10 +29,10 @@ export class HomePage implements OnDestroy {
   
   @ViewChild(Content) content: Content;
 
-  private DEFAULT_PROJECT_COUNT = 5
+  // private DEFAULT_PROJECT_COUNT = 5
 
   private projects
-  private allProjects
+  // private allProjects
   
   private isAuth: boolean
   private isLoading: boolean
@@ -56,7 +56,7 @@ export class HomePage implements OnDestroy {
     private firebaseAnalytics: FirebaseAnalytics
   ) {
     this.projects = []
-    this.allProjects = []
+    // this.allProjects = []
     this.isLoading = false
     this.isLoadingOnPull = false
     this.isFooterVisible = true
@@ -134,14 +134,14 @@ export class HomePage implements OnDestroy {
       this.isLoading = true
       let json = await this.api.getProjects(this.city.id)
       console.log(json)
-      this.allProjects = json.projects
+      this.projects = json.projects
       
       this.api.isAuthorized();
       
-      this.projects = []
-      for (let i = 0; i < this.DEFAULT_PROJECT_COUNT; i++) {
-        this.projects.push(this.allProjects[i])
-      }
+      // this.projects = []
+      // for (let i = 0; i < this.DEFAULT_PROJECT_COUNT; i++) {
+      //   this.projects.push(this.allProjects[i])
+      // }
 
     } catch(err) {
       console.log(err)
@@ -151,21 +151,21 @@ export class HomePage implements OnDestroy {
     }
   }
 
-  doInfinite(infiniteScroll) {
-    console.log('Begin async operation')
-    if (this.projects && this.allProjects) {
-      if (this.projects.length < this.allProjects.length) {
-        let offset = this.projects.length + 1
-        for (let i = offset; i < offset + this.DEFAULT_PROJECT_COUNT; i++) {
-          if (i < this.allProjects.length)
-            this.projects.push(this.allProjects[i])
-          else break
-        }
-      }
-    }
-    console.log('Async operation has ended')
-    infiniteScroll.complete()
-  }
+  // doInfinite(infiniteScroll) {
+  //   console.log('Begin async operation')
+  //   if (this.projects && this.allProjects) {
+  //     if (this.projects.length < this.allProjects.length) {
+  //       let offset = this.projects.length + 1
+  //       for (let i = offset; i < offset + this.DEFAULT_PROJECT_COUNT; i++) {
+  //         if (i < this.allProjects.length)
+  //           this.projects.push(this.allProjects[i])
+  //         else break
+  //       }
+  //     }
+  //   }
+  //   console.log('Async operation has ended')
+  //   infiniteScroll.complete()
+  // }
   
   openDetails(p) {
     this.navCtrl.push('DetailsPage', { city: this.city, project: p })

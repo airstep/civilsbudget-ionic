@@ -61,12 +61,12 @@
     </ion-card>    
   </ion-list>
 
-  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" threshold="70" enabled="true">
+  <!-- <ion-infinite-scroll (ionInfinite)="doInfinite($event)" threshold="20" enabled="true">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="{{ 'LOADING_MORE_DATA' | translate }}">
     </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  </ion-infinite-scroll> -->
 
   <div class="spinner" *ngIf="isLoading === true && projects.length === 0">
     <ion-spinner name="ios">{{ 'LOADING' | translate }}</ion-spinner>
