@@ -20,7 +20,7 @@ export class ApiProvider {
   // private baseDataURL = "https://bankid.privatbank.ua/ResourceService"
 
   // REAL URL's
-  private baseURL = "https://golos.hromada.live/api"
+  private baseURL = "https://imisto.org/api"
   public codeURL = `${this.baseURL}/login?code=`
   // UNCOMMENT
 
@@ -87,7 +87,7 @@ export class ApiProvider {
       console.log("check if user time go away: " + result)
       return result
     }
-    return false    
+    return false
   }
 
   public async initSettings() {
@@ -99,7 +99,7 @@ export class ApiProvider {
   }
 
   public async getProjects(votingId) {
-    return this.get("/votings/"+ votingId + "/projects")
+    return this.get("/votings/" + votingId + "/projects")
   }
 
   public async logout() {
@@ -132,20 +132,20 @@ export class ApiProvider {
   }
 
   public async civilAuth() {
-    console.log('civilAuth') 
+    console.log('civilAuth')
     try {
       if (this.bankIdAuth) {
-        console.log('civilAuth1') 
+        console.log('civilAuth1')
         this.user = await this.get("/authorization?code=" + this.bankIdAuth.access_token)
         console.log('user', JSON.stringify(this.user))
         if (this.user) {
-          console.log('civilAuth2') 
+          console.log('civilAuth2')
           this.user.savedAt = new Date();
           localStorage.setItem('user', JSON.stringify(this.user))
-          console.log('civilAuth3') 
+          console.log('civilAuth3')
           this.authCheck.next(this.user)
         }
-        console.log('civilAuth4') 
+        console.log('civilAuth4')
         return true
       }
     } catch (err) {
@@ -181,7 +181,7 @@ export class ApiProvider {
     if (await this.isAuthorized()) {
       let headers = new Headers({
         'Accept': 'application/json',
-        'Content-Type' : 'application/json'
+        'Content-Type': 'application/json'
       })
       let options = new RequestOptions({ headers: headers })
       let data = JSON.stringify({
@@ -205,21 +205,21 @@ export class ApiProvider {
 
   public async get(path) {
     console.log(this.baseURL + path)
-    return this.http.get(this.baseURL + path, {responseType: ResponseContentType.Json})
-    .timeout(this.timeoutMS)
-    .map(res => {
-      console.log(res)
-      let result = res.json()
-      return result
-    })
-    .catch(this.catchError)
-    .toPromise()
+    return this.http.get(this.baseURL + path, { responseType: ResponseContentType.Json })
+      .timeout(this.timeoutMS)
+      .map(res => {
+        console.log(res)
+        let result = res.json()
+        return result
+      })
+      .catch(this.catchError)
+      .toPromise()
   }
 
   public async getTransformCSS() {
     return this.http.get('assets/css/style.css')
       .map(css => css.text())
-			.catch(this.catchError)
+      .catch(this.catchError)
       .toPromise()
   }
 
@@ -234,7 +234,7 @@ export class ApiProvider {
   //   this.code = url.substr(url.lastIndexOf("=") + 1, url.length)
   // }
 
-  catchError(error: Response | any){
+  catchError(error: Response | any) {
     let errMsg: string
     let result: Error
     if (error instanceof Response) {
@@ -266,7 +266,7 @@ export class ApiProvider {
   // Auth
   async bankIdLogin() {
     await this.platform.ready()
-    
+
     await this.initSettings()
 
     let baseAuthURL = this.getBaseAuthURL()
@@ -318,11 +318,11 @@ export class ApiProvider {
           if (event.url.startsWith(this.codeURL)) {
             browser.executeScript({ code: "document.body.innerText" })
               .then(result => {
-                  console.log(result)
-                  if (result.length > 0) {
-                    this.bankIdAuth = JSON.parse(result[0])
-                    browser.close()
-                  }
+                console.log(result)
+                if (result.length > 0) {
+                  this.bankIdAuth = JSON.parse(result[0])
+                  browser.close()
+                }
               })
               .catch(err => {
                 browser.close()
@@ -339,11 +339,11 @@ export class ApiProvider {
         if (event.url.startsWith(this.codeURL)) {
           browser.executeScript({ code: "document.body.innerText" })
             .then(result => {
-                console.log(result)
-                if (result.length > 0) {
-                  this.bankIdAuth = JSON.parse(result[0])
-                  browser.close()
-                }
+              console.log(result)
+              if (result.length > 0) {
+                this.bankIdAuth = JSON.parse(result[0])
+                browser.close()
+              }
             })
             .catch(err => {
               browser.close()
